@@ -3,7 +3,9 @@ import { ApoioPage } from './features/apoio/ApoioPage';
 import { AprovacoesPage } from './features/aprovacoes/AprovacoesPage';
 import { AuditoriaPage } from './features/auditoria/AuditoriaPage';
 import { ClienteEquipePage, ClientesPage } from './features/clientes/ClientesPage';
+import { ContratoPage } from './features/contratos/ContratoPage';
 import { ConveniosPage } from './features/convenios/ConveniosPage';
+import { EsteiraPage } from './features/esteira/EsteiraPage';
 import { ParceiroClientePage, ParceiroClientesPage } from './features/parceiro/ParceiroClientesPage';
 import { ParceirosPage } from './features/parceiros/ParceirosPage';
 import { SimuladorPage } from './features/simulador/SimuladorPage';
@@ -14,6 +16,8 @@ import { UsuariosPage } from './features/usuarios/UsuariosPage';
 // Cada área é registrada aqui conforme é construída. O que cada um vê é decidido pelo banco (RLS).
 export const rotasProtegidas: { path: string; element: ReactElement }[] = [
   { path: '/simulador', element: <SimuladorPage /> },
+  { path: '/esteira', element: <EsteiraPage /> },
+  { path: '/contratos/:id', element: <ContratoPage /> },
   { path: '/clientes', element: <ClientesPage /> },
   { path: '/clientes/:id', element: <ClienteEquipePage /> },
   { path: '/parceiro/clientes', element: <ParceiroClientesPage /> },

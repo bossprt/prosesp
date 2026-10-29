@@ -12,6 +12,7 @@ export interface ItemMenu {
 
 const MENU: ItemMenu[] = [
   { rota: '/simulador', rotulo: 'Simulador', permissao: 'simulador.usar', publico: 'todos' },
+  { rota: '/esteira', rotulo: 'Esteira', permissao: 'contratos.ver', publico: 'equipe' },
   { rota: '/clientes', rotulo: 'Clientes', permissao: 'clientes.ver', publico: 'equipe' },
   { rota: '/parceiro/clientes', rotulo: 'Meus clientes', permissao: 'clientes.ver', publico: 'parceiro' },
   { rota: '/convenios', rotulo: 'Convênios', permissao: 'convenios.ver', publico: 'equipe' },

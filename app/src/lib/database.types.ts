@@ -255,6 +255,346 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"configuracoes": {
+                  Row: {
+                    "chave": string,"descricao": string | null,"valor": NonNullable<Json>
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "chave": string,"descricao"?: string | null,"valor": NonNullable<Json>
+                  }
+                  Update: {
+                    "chave"?: string,"descricao"?: string | null,"valor"?: NonNullable<Json>
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"contrato_averbacoes": {
+                  Row: {
+                    "ade": string,"contrato_id": string,"convenio_id": string,"criado_em": string,"criado_por": string | null,"id": string,"matricula_id": string,"migrada_para": string | null,"situacao": Database["public"]['Enums']["situacao_averbacao"],"valor_averbado": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "ade": string,"contrato_id": string,"convenio_id": string,"criado_em"?: string,"criado_por"?: string | null,"id"?: string,"matricula_id": string,"migrada_para"?: string | null,"situacao": Database["public"]['Enums']["situacao_averbacao"],"valor_averbado": number
+                  }
+                  Update: {
+                    "ade"?: string,"contrato_id"?: string,"convenio_id"?: string,"criado_em"?: string,"criado_por"?: string | null,"id"?: string,"matricula_id"?: string,"migrada_para"?: string | null,"situacao"?: Database["public"]['Enums']["situacao_averbacao"],"valor_averbado"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "contrato_averbacoes_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "contratos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contrato_averbacoes_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "v_candidatos_prejuizo"
+      referencedColumns: ["contrato_id"]
+    },{
+      foreignKeyName: "contrato_averbacoes_convenio_id_fkey"
+      columns: ["convenio_id"]
+isOneToOne: false
+      referencedRelation: "convenios"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contrato_averbacoes_matricula_id_fkey"
+      columns: ["matricula_id"]
+isOneToOne: false
+      referencedRelation: "cliente_matriculas"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contrato_averbacoes_migrada_para_fkey"
+      columns: ["migrada_para"]
+isOneToOne: false
+      referencedRelation: "contrato_averbacoes"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"contrato_comissao_regra": {
+                  Row: {
+                    "base": Database["public"]['Enums']["base_comissao"],"contrato_id": string,"percentual": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "base": Database["public"]['Enums']["base_comissao"],"contrato_id": string,"percentual": number
+                  }
+                  Update: {
+                    "base"?: Database["public"]['Enums']["base_comissao"],"contrato_id"?: string,"percentual"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "contrato_comissao_regra_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: true
+      referencedRelation: "contratos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contrato_comissao_regra_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: true
+      referencedRelation: "v_candidatos_prejuizo"
+      referencedColumns: ["contrato_id"]
+    }
+                  ]
+                },"contrato_descontos": {
+                  Row: {
+                    "contrato_id": string,"id": string,"tipo_desconto_id": string,"valor": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "contrato_id": string,"id"?: string,"tipo_desconto_id": string,"valor": number
+                  }
+                  Update: {
+                    "contrato_id"?: string,"id"?: string,"tipo_desconto_id"?: string,"valor"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "contrato_descontos_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "contratos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contrato_descontos_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "v_candidatos_prejuizo"
+      referencedColumns: ["contrato_id"]
+    },{
+      foreignKeyName: "contrato_descontos_tipo_desconto_id_fkey"
+      columns: ["tipo_desconto_id"]
+isOneToOne: false
+      referencedRelation: "convenio_tipos_desconto"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"contrato_dividas_externas": {
+                  Row: {
+                    "contrato_id": string,"credor": string,"favorecido": string | null,"id": string,"numero_contrato_externo": string | null,"observacao": string | null,"saldo": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "contrato_id": string,"credor": string,"favorecido"?: string | null,"id"?: string,"numero_contrato_externo"?: string | null,"observacao"?: string | null,"saldo": number
+                  }
+                  Update: {
+                    "contrato_id"?: string,"credor"?: string,"favorecido"?: string | null,"id"?: string,"numero_contrato_externo"?: string | null,"observacao"?: string | null,"saldo"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "contrato_dividas_externas_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "contratos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contrato_dividas_externas_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "v_candidatos_prejuizo"
+      referencedColumns: ["contrato_id"]
+    }
+                  ]
+                },"contrato_eventos": {
+                  Row: {
+                    "contrato_id": string,"de": Database["public"]['Enums']["fase_contrato"] | null,"em": string,"id": number,"motivo": string | null,"para": Database["public"]['Enums']["fase_contrato"] | null,"situacao_de": Database["public"]['Enums']["situacao_contrato"] | null,"situacao_para": Database["public"]['Enums']["situacao_contrato"] | null,"usuario_id": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "contrato_id": string,"de"?: Database["public"]['Enums']["fase_contrato"] | null,"em"?: string,"id"?: never,"motivo"?: string | null,"para"?: Database["public"]['Enums']["fase_contrato"] | null,"situacao_de"?: Database["public"]['Enums']["situacao_contrato"] | null,"situacao_para"?: Database["public"]['Enums']["situacao_contrato"] | null,"usuario_id"?: string | null
+                  }
+                  Update: {
+                    "contrato_id"?: string,"de"?: Database["public"]['Enums']["fase_contrato"] | null,"em"?: string,"id"?: never,"motivo"?: string | null,"para"?: Database["public"]['Enums']["fase_contrato"] | null,"situacao_de"?: Database["public"]['Enums']["situacao_contrato"] | null,"situacao_para"?: Database["public"]['Enums']["situacao_contrato"] | null,"usuario_id"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "contrato_eventos_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "contratos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contrato_eventos_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "v_candidatos_prejuizo"
+      referencedColumns: ["contrato_id"]
+    }
+                  ]
+                },"contrato_quitacoes": {
+                  Row: {
+                    "contrato_id": string,"contrato_quitado_id": string,"fonte": string,"id": string,"observacao": string | null,"reservado": boolean,"saldo_devedor": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "contrato_id": string,"contrato_quitado_id": string,"fonte": string,"id"?: string,"observacao"?: string | null,"reservado"?: boolean,"saldo_devedor": number
+                  }
+                  Update: {
+                    "contrato_id"?: string,"contrato_quitado_id"?: string,"fonte"?: string,"id"?: string,"observacao"?: string | null,"reservado"?: boolean,"saldo_devedor"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "contrato_quitacoes_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "contratos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contrato_quitacoes_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "v_candidatos_prejuizo"
+      referencedColumns: ["contrato_id"]
+    },{
+      foreignKeyName: "contrato_quitacoes_contrato_quitado_id_fkey"
+      columns: ["contrato_quitado_id"]
+isOneToOne: false
+      referencedRelation: "contratos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contrato_quitacoes_contrato_quitado_id_fkey"
+      columns: ["contrato_quitado_id"]
+isOneToOne: false
+      referencedRelation: "v_candidatos_prejuizo"
+      referencedColumns: ["contrato_id"]
+    }
+                  ]
+                },"contrato_versoes": {
+                  Row: {
+                    "contrato_id": string,"criado_em": string,"criado_por": string | null,"dados": NonNullable<Json>,"id": string,"motivo": string | null,"versao": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "contrato_id": string,"criado_em"?: string,"criado_por"?: string | null,"dados": NonNullable<Json>,"id"?: string,"motivo"?: string | null,"versao": number
+                  }
+                  Update: {
+                    "contrato_id"?: string,"criado_em"?: string,"criado_por"?: string | null,"dados"?: NonNullable<Json>,"id"?: string,"motivo"?: string | null,"versao"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "contrato_versoes_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "contratos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contrato_versoes_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "v_candidatos_prejuizo"
+      referencedColumns: ["contrato_id"]
+    }
+                  ]
+                },"contrato_versoes_comissao": {
+                  Row: {
+                    "base": Database["public"]['Enums']["base_comissao"],"contrato_id": string,"percentual": number,"versao": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "base": Database["public"]['Enums']["base_comissao"],"contrato_id": string,"percentual": number,"versao": number
+                  }
+                  Update: {
+                    "base"?: Database["public"]['Enums']["base_comissao"],"contrato_id"?: string,"percentual"?: number,"versao"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "contrato_versoes_comissao_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "contratos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contrato_versoes_comissao_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "v_candidatos_prejuizo"
+      referencedColumns: ["contrato_id"]
+    }
+                  ]
+                },"contratos": {
+                  Row: {
+                    "agente_id": string | null,"cliente_id": string,"convenio_id": string,"criado_em": string,"criado_por": string | null,"data_liberacao": string | null,"fase": Database["public"]['Enums']["fase_contrato"],"fase_retorno": Database["public"]['Enums']["fase_contrato"] | null,"fator": number,"id": string,"legado": boolean,"legado_importado_em": string | null,"legado_importado_por": string | null,"linha_tabela_id": string | null,"matricula_id": string,"mensalidade_proposta": number | null,"numero": number,"origem_id": string | null,"parceiro_id": string | null,"prazo": number,"primeiro_vencimento": string | null,"situacao": Database["public"]['Enums']["situacao_contrato"],"tipo": Database["public"]['Enums']["tipo_contrato"],"total_descontos": number,"total_dividas_externas": number,"total_quitado": number,"valor_bruto": number,"valor_liquido": number | null,"valor_mensalidade_tabela": number | null,"valor_parcela": number,"valores_travados_em": string | null,"versao": number,"vinculo_id": string,"_dados_do_contrato": Json | null
+                  }
+                  ComputedFields: "_dados_do_contrato"
+                  Insert: {
+                    "agente_id"?: string | null,"cliente_id": string,"convenio_id": string,"criado_em"?: string,"criado_por"?: string | null,"data_liberacao"?: string | null,"fase": Database["public"]['Enums']["fase_contrato"],"fase_retorno"?: Database["public"]['Enums']["fase_contrato"] | null,"fator": number,"id"?: string,"legado"?: boolean,"legado_importado_em"?: string | null,"legado_importado_por"?: string | null,"linha_tabela_id"?: string | null,"matricula_id": string,"mensalidade_proposta"?: number | null,"numero"?: number,"origem_id"?: string | null,"parceiro_id"?: string | null,"prazo": number,"primeiro_vencimento"?: string | null,"situacao"?: Database["public"]['Enums']["situacao_contrato"],"tipo": Database["public"]['Enums']["tipo_contrato"],"total_descontos"?: number,"total_dividas_externas"?: number,"total_quitado"?: number,"valor_bruto": number,"valor_liquido"?: never,"valor_mensalidade_tabela"?: number | null,"valor_parcela": number,"valores_travados_em"?: string | null,"versao"?: number,"vinculo_id": string
+                  }
+                  Update: {
+                    "agente_id"?: string | null,"cliente_id"?: string,"convenio_id"?: string,"criado_em"?: string,"criado_por"?: string | null,"data_liberacao"?: string | null,"fase"?: Database["public"]['Enums']["fase_contrato"],"fase_retorno"?: Database["public"]['Enums']["fase_contrato"] | null,"fator"?: number,"id"?: string,"legado"?: boolean,"legado_importado_em"?: string | null,"legado_importado_por"?: string | null,"linha_tabela_id"?: string | null,"matricula_id"?: string,"mensalidade_proposta"?: number | null,"numero"?: number,"origem_id"?: string | null,"parceiro_id"?: string | null,"prazo"?: number,"primeiro_vencimento"?: string | null,"situacao"?: Database["public"]['Enums']["situacao_contrato"],"tipo"?: Database["public"]['Enums']["tipo_contrato"],"total_descontos"?: number,"total_dividas_externas"?: number,"total_quitado"?: number,"valor_bruto"?: number,"valor_liquido"?: never,"valor_mensalidade_tabela"?: number | null,"valor_parcela"?: number,"valores_travados_em"?: string | null,"versao"?: number,"vinculo_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "contratos_agente_id_fkey"
+      columns: ["agente_id"]
+isOneToOne: false
+      referencedRelation: "agentes"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contratos_cliente_id_fkey"
+      columns: ["cliente_id"]
+isOneToOne: false
+      referencedRelation: "clientes"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contratos_convenio_id_fkey"
+      columns: ["convenio_id"]
+isOneToOne: false
+      referencedRelation: "convenios"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contratos_linha_tabela_id_fkey"
+      columns: ["linha_tabela_id"]
+isOneToOne: false
+      referencedRelation: "tabela_linhas"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contratos_matricula_id_fkey"
+      columns: ["matricula_id"]
+isOneToOne: false
+      referencedRelation: "cliente_matriculas"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contratos_origem_id_fkey"
+      columns: ["origem_id"]
+isOneToOne: false
+      referencedRelation: "origens"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contratos_parceiro_id_fkey"
+      columns: ["parceiro_id"]
+isOneToOne: false
+      referencedRelation: "parceiros"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contratos_vinculo_id_fkey"
+      columns: ["vinculo_id"]
+isOneToOne: false
+      referencedRelation: "convenio_vinculos"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"convenio_tipos_desconto": {
+                  Row: {
+                    "ativo": boolean,"convenio_id": string,"forma": string,"id": string,"nome": string,"valor_padrao": number | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "ativo"?: boolean,"convenio_id": string,"forma": string,"id"?: string,"nome": string,"valor_padrao"?: number | null
+                  }
+                  Update: {
+                    "ativo"?: boolean,"convenio_id"?: string,"forma"?: string,"id"?: string,"nome"?: string,"valor_padrao"?: number | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "convenio_tipos_desconto_convenio_id_fkey"
+      columns: ["convenio_id"]
+isOneToOne: false
+      referencedRelation: "convenios"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"convenio_vinculos": {
                   Row: {
                     "ativo": boolean,"convenio_id": string,"id": string,"nome": string
@@ -288,6 +628,160 @@ isOneToOne: false
                   }
                   Relationships: [
                     
+                  ]
+                },"fase_transicoes": {
+                  Row: {
+                    "de": Database["public"]['Enums']["fase_contrato"],"para": Database["public"]['Enums']["fase_contrato"],"permissao": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "de": Database["public"]['Enums']["fase_contrato"],"para": Database["public"]['Enums']["fase_contrato"],"permissao": string
+                  }
+                  Update: {
+                    "de"?: Database["public"]['Enums']["fase_contrato"],"para"?: Database["public"]['Enums']["fase_contrato"],"permissao"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "fase_transicoes_permissao_fkey"
+      columns: ["permissao"]
+isOneToOne: false
+      referencedRelation: "permissoes"
+      referencedColumns: ["chave"]
+    }
+                  ]
+                },"mensalidade_averbacoes": {
+                  Row: {
+                    "ade": string,"contrato_origem_id": string | null,"convenio_id": string,"criado_em": string,"criado_por": string | null,"id": string,"matricula_id": string,"mensalidade_id": string | null,"migrada_para": string | null,"situacao": Database["public"]['Enums']["situacao_averbacao"],"valor_averbado": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "ade": string,"contrato_origem_id"?: string | null,"convenio_id": string,"criado_em"?: string,"criado_por"?: string | null,"id"?: string,"matricula_id": string,"mensalidade_id"?: string | null,"migrada_para"?: string | null,"situacao": Database["public"]['Enums']["situacao_averbacao"],"valor_averbado": number
+                  }
+                  Update: {
+                    "ade"?: string,"contrato_origem_id"?: string | null,"convenio_id"?: string,"criado_em"?: string,"criado_por"?: string | null,"id"?: string,"matricula_id"?: string,"mensalidade_id"?: string | null,"migrada_para"?: string | null,"situacao"?: Database["public"]['Enums']["situacao_averbacao"],"valor_averbado"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "mensalidade_averbacoes_contrato_origem_id_fkey"
+      columns: ["contrato_origem_id"]
+isOneToOne: false
+      referencedRelation: "contratos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "mensalidade_averbacoes_contrato_origem_id_fkey"
+      columns: ["contrato_origem_id"]
+isOneToOne: false
+      referencedRelation: "v_candidatos_prejuizo"
+      referencedColumns: ["contrato_id"]
+    },{
+      foreignKeyName: "mensalidade_averbacoes_convenio_id_fkey"
+      columns: ["convenio_id"]
+isOneToOne: false
+      referencedRelation: "convenios"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "mensalidade_averbacoes_matricula_id_fkey"
+      columns: ["matricula_id"]
+isOneToOne: false
+      referencedRelation: "cliente_matriculas"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "mensalidade_averbacoes_mensalidade_id_fkey"
+      columns: ["mensalidade_id"]
+isOneToOne: false
+      referencedRelation: "mensalidades"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "mensalidade_averbacoes_migrada_para_fkey"
+      columns: ["migrada_para"]
+isOneToOne: false
+      referencedRelation: "mensalidade_averbacoes"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"mensalidade_parcelas": {
+                  Row: {
+                    "competencia": string,"id": string,"mensalidade_id": string,"status": string,"valor": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "competencia": string,"id"?: string,"mensalidade_id": string,"status"?: string,"valor": number
+                  }
+                  Update: {
+                    "competencia"?: string,"id"?: string,"mensalidade_id"?: string,"status"?: string,"valor"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "mensalidade_parcelas_mensalidade_id_fkey"
+      columns: ["mensalidade_id"]
+isOneToOne: false
+      referencedRelation: "mensalidades"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"mensalidade_valores": {
+                  Row: {
+                    "averbacao_id": string | null,"contrato_origem_id": string | null,"criado_em": string,"id": string,"mensalidade_id": string,"tipo": string,"valor": number,"vigente_desde": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "averbacao_id"?: string | null,"contrato_origem_id"?: string | null,"criado_em"?: string,"id"?: string,"mensalidade_id": string,"tipo": string,"valor": number,"vigente_desde": string
+                  }
+                  Update: {
+                    "averbacao_id"?: string | null,"contrato_origem_id"?: string | null,"criado_em"?: string,"id"?: string,"mensalidade_id"?: string,"tipo"?: string,"valor"?: number,"vigente_desde"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "mensalidade_valores_averbacao_id_fkey"
+      columns: ["averbacao_id"]
+isOneToOne: false
+      referencedRelation: "mensalidade_averbacoes"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "mensalidade_valores_contrato_origem_id_fkey"
+      columns: ["contrato_origem_id"]
+isOneToOne: false
+      referencedRelation: "contratos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "mensalidade_valores_contrato_origem_id_fkey"
+      columns: ["contrato_origem_id"]
+isOneToOne: false
+      referencedRelation: "v_candidatos_prejuizo"
+      referencedColumns: ["contrato_id"]
+    },{
+      foreignKeyName: "mensalidade_valores_mensalidade_id_fkey"
+      columns: ["mensalidade_id"]
+isOneToOne: false
+      referencedRelation: "mensalidades"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"mensalidades": {
+                  Row: {
+                    "cancelada_em": string | null,"criado_em": string,"id": string,"matricula_id": string,"motivo_cancelamento": string | null,"requerimento_documento_id": string | null,"situacao": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "cancelada_em"?: string | null,"criado_em"?: string,"id"?: string,"matricula_id": string,"motivo_cancelamento"?: string | null,"requerimento_documento_id"?: string | null,"situacao"?: string
+                  }
+                  Update: {
+                    "cancelada_em"?: string | null,"criado_em"?: string,"id"?: string,"matricula_id"?: string,"motivo_cancelamento"?: string | null,"requerimento_documento_id"?: string | null,"situacao"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "mensalidades_matricula_id_fkey"
+      columns: ["matricula_id"]
+isOneToOne: false
+      referencedRelation: "cliente_matriculas"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "mensalidades_requerimento_documento_id_fkey"
+      columns: ["requerimento_documento_id"]
+isOneToOne: false
+      referencedRelation: "cliente_documentos"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"origens": {
                   Row: {
@@ -342,6 +836,108 @@ isOneToOne: false
                   }
                   Relationships: [
                     
+                  ]
+                },"parcela_pagamentos": {
+                  Row: {
+                    "averbacao_id": string | null,"competencia_desconto": string,"criado_em": string,"id": string,"origem": string,"parcela_id": string,"valor": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "averbacao_id"?: string | null,"competencia_desconto": string,"criado_em"?: string,"id"?: string,"origem"?: string,"parcela_id": string,"valor": number
+                  }
+                  Update: {
+                    "averbacao_id"?: string | null,"competencia_desconto"?: string,"criado_em"?: string,"id"?: string,"origem"?: string,"parcela_id"?: string,"valor"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "parcela_pagamentos_averbacao_id_fkey"
+      columns: ["averbacao_id"]
+isOneToOne: false
+      referencedRelation: "contrato_averbacoes"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "parcela_pagamentos_parcela_id_fkey"
+      columns: ["parcela_id"]
+isOneToOne: false
+      referencedRelation: "parcelas"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "parcela_pagamentos_parcela_id_fkey"
+      columns: ["parcela_id"]
+isOneToOne: false
+      referencedRelation: "v_parcelas_saldo"
+      referencedColumns: ["parcela_id"]
+    }
+                  ]
+                },"parcelas": {
+                  Row: {
+                    "averbacao_id": string | null,"competencia": string,"contrato_id": string,"id": string,"numero": number,"status": string,"valor": number,"vencimento": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "averbacao_id"?: string | null,"competencia": string,"contrato_id": string,"id"?: string,"numero": number,"status"?: string,"valor": number,"vencimento": string
+                  }
+                  Update: {
+                    "averbacao_id"?: string | null,"competencia"?: string,"contrato_id"?: string,"id"?: string,"numero"?: number,"status"?: string,"valor"?: number,"vencimento"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "parcelas_averbacao_id_fkey"
+      columns: ["averbacao_id"]
+isOneToOne: false
+      referencedRelation: "contrato_averbacoes"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "parcelas_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "contratos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "parcelas_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "v_candidatos_prejuizo"
+      referencedColumns: ["contrato_id"]
+    }
+                  ]
+                },"pendencias_averbadora": {
+                  Row: {
+                    "averbacao_id": string | null,"contrato_id": string | null,"criado_em": string,"id": string,"mensalidade_averbacao_id": string | null,"motivo": string,"resolvida_em": string | null,"resolvida_por": string | null,"tipo": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "averbacao_id"?: string | null,"contrato_id"?: string | null,"criado_em"?: string,"id"?: string,"mensalidade_averbacao_id"?: string | null,"motivo": string,"resolvida_em"?: string | null,"resolvida_por"?: string | null,"tipo": string
+                  }
+                  Update: {
+                    "averbacao_id"?: string | null,"contrato_id"?: string | null,"criado_em"?: string,"id"?: string,"mensalidade_averbacao_id"?: string | null,"motivo"?: string,"resolvida_em"?: string | null,"resolvida_por"?: string | null,"tipo"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "pendencias_averbadora_averbacao_id_fkey"
+      columns: ["averbacao_id"]
+isOneToOne: false
+      referencedRelation: "contrato_averbacoes"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "pendencias_averbadora_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "contratos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "pendencias_averbadora_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "v_candidatos_prejuizo"
+      referencedColumns: ["contrato_id"]
+    },{
+      foreignKeyName: "pendencias_averbadora_mensalidade_averbacao_id_fkey"
+      columns: ["mensalidade_averbacao_id"]
+isOneToOne: false
+      referencedRelation: "mensalidade_averbacoes"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"perfil_permissoes": {
                   Row: {
@@ -492,17 +1088,99 @@ isOneToOne: false
                 }
           }
           Views: {
-            [_ in never]: never
+            "v_candidatos_prejuizo": {
+                  Row: {
+                    "cliente": string,"contrato_id": string,"convenio": string,"dias_atraso": number | null,"numero": number
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_parcelas_saldo": {
+                  Row: {
+                    "pago": number | null,"parcela_id": string,"saldo": number | null,"valor": number
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                }
           }
           Functions: {
-            "_campos_permitidos":
+            "_aplicar_satelites":
+{ Args: { "p_contrato_id": string,"p_dados": Json }; Returns: undefined
+                           },
+"_apos_nova_averbacao":
+{ Args: { "p_antiga": string,"p_contrato_id": string,"p_nova": string }; Returns: undefined
+                           },
+"_calcular_contrato":
+{ Args: { "p_dados": Json,"p_gravar": boolean }; Returns: Json
+                           },
+"_campos_permitidos":
 { Args: { "p_tipo": string }; Returns: (string)[]
                            },
 "_cliente_por_cpf_matricula":
 { Args: { "p_cpf": string,"p_matricula": string }; Returns: string
                            },
+"_contrato_para_averbacao":
+{ Args: { "p_id": string }; Returns: {
+              "agente_id": string | null,
+"cliente_id": string,
+"convenio_id": string,
+"criado_em": string,
+"criado_por": string | null,
+"data_liberacao": string | null,
+"fase": Database["public"]['Enums']["fase_contrato"],
+"fase_retorno": Database["public"]['Enums']["fase_contrato"] | null,
+"fator": number,
+"id": string,
+"legado": boolean,
+"legado_importado_em": string | null,
+"legado_importado_por": string | null,
+"linha_tabela_id": string | null,
+"matricula_id": string,
+"mensalidade_proposta": number | null,
+"numero": number,
+"origem_id": string | null,
+"parceiro_id": string | null,
+"prazo": number,
+"primeiro_vencimento": string | null,
+"situacao": Database["public"]['Enums']["situacao_contrato"],
+"tipo": Database["public"]['Enums']["tipo_contrato"],
+"total_descontos": number,
+"total_dividas_externas": number,
+"total_quitado": number,
+"valor_bruto": number,
+"valor_liquido": number | null,
+"valor_mensalidade_tabela": number | null,
+"valor_parcela": number,
+"valores_travados_em": string | null,
+"versao": number,
+"vinculo_id": string
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "contratos"
+        isOneToOne: true
+        isSetofReturn: false
+      } },
+"_criar_contrato":
+{ Args: { "p_dados": Json,"p_fase": Database["public"]['Enums']["fase_contrato"],"p_gravar": boolean,"p_parceiro_id": string }; Returns: string
+                           },
+"_dados_do_contrato":
+{ Args: { "k": Omit<Database["public"]['Tables']["contratos"]['Row'], Database["public"]['Tables']["contratos"]['ComputedFields']> }; Returns: Json
+                           },
+"_exigir_cliente_para_contrato":
+{ Args: { "p_cliente_id": string }; Returns: undefined
+                           },
 "_exigir_parceiro":
 { Args: { "p_permissao": string }; Returns: string
+                           },
+"_gravar_comissao":
+{ Args: { "p_calc": Json,"p_contrato_id": string }; Returns: undefined
+                           },
+"_gravar_versao":
+{ Args: { "p_contrato_id": string,"p_motivo": string }; Returns: undefined
                            },
 "_linhas_candidatas":
 { Args: { "p_convenio_id": string,"p_data": string,"p_data_nascimento": string,"p_prazo": number,"p_tipo": Database["public"]['Enums']["tipo_contrato"],"p_vinculo_id": string }; Returns: {
@@ -524,13 +1202,28 @@ isOneToOne: false
         isOneToOne: false
         isSetofReturn: true
       } },
+"_mensalidade_na_liberacao":
+{ Args: { "k": Omit<Database["public"]['Tables']["contratos"]['Row'], Database["public"]['Tables']["contratos"]['ComputedFields']>,"p_competencia": string }; Returns: undefined
+                           },
+"_pedir_cancelamento_averbacoes":
+{ Args: { "p_contrato_id": string,"p_motivo": string }; Returns: undefined
+                           },
 "_registrar_acesso":
 { Args: { "p_acao": string,"p_detalhe": Json }; Returns: undefined
+                           },
+"_registrar_mudanca":
+{ Args: { "p_contrato": Omit<Database["public"]['Tables']["contratos"]['Row'], Database["public"]['Tables']["contratos"]['ComputedFields']>,"p_motivo": string,"p_para": Database["public"]['Enums']["fase_contrato"],"p_situacao": Database["public"]['Enums']["situacao_contrato"] }; Returns: undefined
                            },
 "_resultado_simulacao":
 { Args: { "p_entrada": string,"p_gravar": boolean,"p_linha": Omit<Database["public"]['Tables']["tabela_linhas"]['Row'], Database["public"]['Tables']["tabela_linhas"]['ComputedFields']>,"p_parcela": number,"p_valor": number }; Returns: {
               "base_comissao": Database["public"]['Enums']["base_comissao"],"fator": number,"linha_id": string,"parcela": number,"percentual_comissao": number,"simulacao_id": string,"valor": number,"valor_mensalidade": number
             }[]
+                           },
+"_validar_ade":
+{ Args: { "p_ade": string,"p_confirmacao": string,"p_convenio_id": string }; Returns: string
+                           },
+"_valor_mensalidade_em":
+{ Args: { "p_competencia": string,"p_mensalidade_id": string }; Returns: number
                            },
 "app_equipe_pode":
 { Args: { "p_permissao": string }; Returns: boolean
@@ -550,8 +1243,17 @@ isOneToOne: false
 "aprovar_alteracao":
 { Args: { "p_id": string }; Returns: undefined
                            },
+"aprovar_pre_digitacao":
+{ Args: { "p_id": string }; Returns: Json
+                           },
 "cadastrar_cliente":
 { Args: { "p_dados": Json }; Returns: string
+                           },
+"cancelar_mensalidade":
+{ Args: { "p_documento_id": string,"p_mensalidade_id": string,"p_motivo": string }; Returns: undefined
+                           },
+"cancelar_pre_digitacao":
+{ Args: { "p_id": string,"p_motivo": string }; Returns: undefined
                            },
 "catalogo_campos_cliente":
 { Args: Record<PropertyKey, never>; Returns: {
@@ -560,6 +1262,15 @@ isOneToOne: false
                            },
 "cliente_do_caminho":
 { Args: { "p_nome": string }; Returns: string
+                           },
+"config_bool":
+{ Args: { "p_chave": string }; Returns: boolean
+                           },
+"confirmar_aprovacao":
+{ Args: { "p_id": string }; Returns: undefined
+                           },
+"contrato_visivel":
+{ Args: { "p_contrato_id": string }; Returns: boolean
                            },
 "cpf_valido":
 { Args: { "p": string }; Returns: boolean
@@ -576,17 +1287,44 @@ isOneToOne: false
 "desativar_usuario":
 { Args: { "p_id": string }; Returns: undefined
                            },
+"devolver_pre_digitacao":
+{ Args: { "p_id": string,"p_motivo": string }; Returns: undefined
+                           },
+"digitar_contrato":
+{ Args: { "p_dados": Json }; Returns: string
+                           },
+"editar_contrato":
+{ Args: { "p_dados": Json,"p_id": string,"p_motivo": string }; Returns: undefined
+                           },
+"encerrar_contrato":
+{ Args: { "p_id": string,"p_motivo": string,"p_tipo": string }; Returns: undefined
+                           },
 "faixa_anos":
 { Args: { "p_max": number,"p_min": number }; Returns: unknown
                            },
 "faixa_centavos":
 { Args: { "p_max": number,"p_min": number }; Returns: unknown
                            },
+"gerar_mensalidades_competencia":
+{ Args: { "p_competencia": string }; Returns: number
+                           },
+"liberar_credito":
+{ Args: { "p_data"?: string,"p_id": string }; Returns: undefined
+                           },
 "linha_foi_usada":
 { Args: { "p_linha_id": string }; Returns: boolean
                            },
 "linhas_usadas":
 { Args: { "p_linha_ids": (string)[] }; Returns: string[]
+                           },
+"mensalidade_vigente":
+{ Args: { "p_matricula_id": string }; Returns: number
+                           },
+"migrar_matricula":
+{ Args: { "p_confirmacao": string,"p_contrato_id": string,"p_nova_matricula_id": string,"p_novo_ade": string,"p_valor_averbado": number }; Returns: undefined
+                           },
+"mover_contrato":
+{ Args: { "p_id": string,"p_motivo"?: string,"p_para": Database["public"]['Enums']["fase_contrato"] }; Returns: undefined
                            },
 "normalizar_cpf":
 { Args: { "p": string }; Returns: string
@@ -613,11 +1351,32 @@ isOneToOne: false
 "parceiro_ve_cliente":
 { Args: { "p_cliente_id": string }; Returns: boolean
                            },
+"pre_digitar_contrato":
+{ Args: { "p_dados": Json }; Returns: string
+                           },
+"primeira_competencia":
+{ Args: { "p_convenio_id": string,"p_data": string }; Returns: string
+                           },
+"reaverbar":
+{ Args: { "p_confirmacao"?: string,"p_contrato_id": string,"p_novo_ade": string }; Returns: undefined
+                           },
+"recalcular_atrasos":
+{ Args: { "p_hoje"?: string }; Returns: undefined
+                           },
 "recusar_alteracao":
 { Args: { "p_id": string,"p_motivo": string }; Returns: undefined
                            },
 "registrar_acesso":
 { Args: { "p_acao": string,"p_detalhe"?: Json }; Returns: undefined
+                           },
+"registrar_ade":
+{ Args: { "p_ade": string,"p_confirmacao"?: string,"p_contrato_id": string }; Returns: undefined
+                           },
+"registrar_ade_mensalidade":
+{ Args: { "p_ade": string,"p_confirmacao"?: string,"p_contrato_id": string }; Returns: undefined
+                           },
+"resolver_pendencia":
+{ Args: { "p_id": string }; Returns: undefined
                            },
 "simular_por_parcela":
 { Args: { "p_convenio_id": string,"p_data"?: string,"p_data_nascimento"?: string,"p_gravar"?: boolean,"p_parcela": number,"p_prazo": number,"p_tipo": Database["public"]['Enums']["tipo_contrato"],"p_vinculo_id": string }; Returns: {
@@ -634,7 +1393,7 @@ isOneToOne: false
                            }
           }
           Enums: {
-            "base_comissao": "liquido"|"bruto","perfil_acesso": "administrador"|"gerente"|"financeiro"|"operador"|"consulta"|"parceiro","tipo_contrato": "novo"|"refinanciamento"|"compra"
+            "base_comissao": "liquido"|"bruto","fase_contrato": "pre_digitacao"|"digitado"|"em_validacao"|"pendente"|"em_averbacao"|"averbado"|"aguardando_assinatura"|"aguardando_pagamento"|"credito_liberado"|"recusado"|"cancelado","perfil_acesso": "administrador"|"gerente"|"financeiro"|"operador"|"consulta"|"parceiro","situacao_averbacao": "proposta"|"ativa"|"substituida"|"migrada"|"cancelamento_pendente"|"cancelada","situacao_contrato": "em_andamento"|"ativo"|"em_atraso"|"quitado"|"renovado"|"cancelado"|"prejuizo","tipo_contrato": "novo"|"refinanciamento"|"compra"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -754,7 +1513,7 @@ export const Constants = {
           }
         },"public": {
           Enums: {
-            "base_comissao": ["liquido", "bruto"],"perfil_acesso": ["administrador", "gerente", "financeiro", "operador", "consulta", "parceiro"],"tipo_contrato": ["novo", "refinanciamento", "compra"]
+            "base_comissao": ["liquido", "bruto"],"fase_contrato": ["pre_digitacao", "digitado", "em_validacao", "pendente", "em_averbacao", "averbado", "aguardando_assinatura", "aguardando_pagamento", "credito_liberado", "recusado", "cancelado"],"perfil_acesso": ["administrador", "gerente", "financeiro", "operador", "consulta", "parceiro"],"situacao_averbacao": ["proposta", "ativa", "substituida", "migrada", "cancelamento_pendente", "cancelada"],"situacao_contrato": ["em_andamento", "ativo", "em_atraso", "quitado", "renovado", "cancelado", "prejuizo"],"tipo_contrato": ["novo", "refinanciamento", "compra"]
           }
         }
 } as const

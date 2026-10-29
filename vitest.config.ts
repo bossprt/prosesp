@@ -13,6 +13,17 @@ export default defineConfig({
           testTimeout: 20000,
         },
       },
+      {
+        root: 'app',
+        esbuild: { jsx: 'automatic' },
+        test: {
+          name: 'app',
+          include: ['src/**/*.test.{ts,tsx}'],
+          environment: 'jsdom',
+          setupFiles: ['src/test/setup.ts'],
+          env: { VITE_SUPABASE_URL: 'http://127.0.0.1:54321', VITE_SUPABASE_ANON_KEY: 'chave-de-teste' },
+        },
+      },
     ],
   },
 });

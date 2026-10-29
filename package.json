@@ -1,0 +1,18 @@
+{
+  "name": "prosesp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:db": "vitest run --project db",
+    "db:reset": "supabase db reset"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.23.1",
+    "pg": "^8.23.1",
+    "supabase": "^2.122.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
+}

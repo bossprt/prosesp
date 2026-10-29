@@ -78,12 +78,14 @@ describe('0001 acesso', () => {
     });
   });
 
-  it('matriz padrão: parceiro tem só as quatro do teto', async () => {
+  it('matriz padrão: parceiro tem só as do teto (Etapa 2 acrescentou contratos.ver e contratos.digitar)', async () => {
     await emTransacao(async (c) => {
       const r = await c.query(
         `select array_agg(permissao order by permissao) as p from public.perfil_permissoes where perfil = 'parceiro'`,
       );
-      expect(r.rows[0].p).toEqual(['clientes.editar', 'clientes.ver', 'convenios.ver', 'simulador.usar']);
+      expect(r.rows[0].p).toEqual([
+        'clientes.editar', 'clientes.ver', 'contratos.digitar', 'contratos.ver', 'convenios.ver', 'simulador.usar',
+      ]);
     });
   });
 });

@@ -21,7 +21,7 @@ export function EsteiraPage() {
   const contratos = useConsulta(['esteira', convenioId, parceiroId, de, ate], async () => {
     let q = supabase
       .from('contratos')
-      .select('id, numero, fase, prazo, valor_bruto, valor_parcela, criado_em, clientes(nome), parceiros(nome), contrato_eventos(em)')
+      .select('id, numero, fase, fase_desde, prazo, valor_bruto, valor_parcela, clientes(nome), parceiros(nome)')
       .in('fase', ORDEM_FASES)
       .order('numero');
     if (convenioId) q = q.eq('convenio_id', convenioId);
@@ -33,7 +33,7 @@ export function EsteiraPage() {
 
   const porFase = new Map<string, ContratoCartao[]>();
   for (const k of contratos.data ?? []) {
-    const desde = k.contrato_eventos.map((e) => e.em).sort().pop() ?? k.criado_em;
+    const desde = k.fase_desde;
     const lista = porFase.get(k.fase) ?? [];
     lista.push({
       id: k.id, numero: k.numero, cliente: k.clientes?.nome ?? '', valor_bruto: k.valor_bruto,

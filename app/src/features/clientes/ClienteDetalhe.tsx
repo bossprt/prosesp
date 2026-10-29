@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Aviso, Botao, Campo, Selecao, Tabela } from '../../components/ui';
 import { exigir, useAcao, useConsulta } from '../../lib/dados';
 import { formatarCelular, formatarCpf } from '../../lib/mascaras';
+import { TIPOS_CONTA, TIPOS_PIX } from '../../lib/opcoes';
 import { supabase } from '../../lib/supabase';
 import { useConveniosOpcoes } from '../convenios/useConvenios';
 import { ClienteDadosForm, type DadosCliente } from './ClienteDadosForm';
@@ -14,12 +15,6 @@ const TIPOS_DOC = [
   { valor: 'comprovante_residencia', rotulo: 'Comprovante de residência' },
   { valor: 'outro', rotulo: 'Outro' },
 ];
-const TIPOS_CONTA = [
-  { valor: 'corrente', rotulo: 'Corrente' },
-  { valor: 'poupanca', rotulo: 'Poupança' },
-  { valor: 'pagamento', rotulo: 'Pagamento' },
-];
-const TIPOS_PIX = ['cpf', 'cnpj', 'email', 'celular', 'aleatoria'].map((v) => ({ valor: v, rotulo: v }));
 
 function propor(clienteId: string, tipo: 'dados' | 'conta' | 'matricula', proposta: Record<string, unknown>) {
   return exigir(supabase.rpc('parceiro_propor_alteracao', { p_cliente_id: clienteId, p_tipo: tipo, p_proposta: proposta as never }));
@@ -326,9 +321,11 @@ function Documentos({ clienteId, modo }: { clienteId: string; modo: Modo }) {
 
   async function baixar(caminho: string) {
     setErro('');
+    // registra o acesso antes de gerar o link; sem registro, não abre
+    const { error: erroAuditoria } = await supabase.rpc('registrar_acesso', { p_acao: 'download_documento', p_detalhe: { caminho } });
+    if (erroAuditoria) return setErro('Não foi possível abrir o documento.');
     const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(caminho, 60);
     if (error || !data) return setErro('Não foi possível abrir o documento.');
-    await supabase.rpc('registrar_acesso', { p_acao: 'download_documento', p_detalhe: { caminho } });
     window.open(data.signedUrl, '_blank', 'noopener');
   }
 

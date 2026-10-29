@@ -524,6 +524,9 @@ isOneToOne: false
         isOneToOne: false
         isSetofReturn: true
       } },
+"_registrar_acesso":
+{ Args: { "p_acao": string,"p_detalhe": Json }; Returns: undefined
+                           },
 "_resultado_simulacao":
 { Args: { "p_entrada": string,"p_gravar": boolean,"p_linha": Omit<Database["public"]['Tables']["tabela_linhas"]['Row'], Database["public"]['Tables']["tabela_linhas"]['ComputedFields']>,"p_parcela": number,"p_valor": number }; Returns: {
               "base_comissao": Database["public"]['Enums']["base_comissao"],"fator": number,"linha_id": string,"parcela": number,"percentual_comissao": number,"simulacao_id": string,"valor": number,"valor_mensalidade": number
@@ -581,6 +584,9 @@ isOneToOne: false
                            },
 "linha_foi_usada":
 { Args: { "p_linha_id": string }; Returns: boolean
+                           },
+"linhas_usadas":
+{ Args: { "p_linha_ids": (string)[] }; Returns: string[]
                            },
 "normalizar_cpf":
 { Args: { "p": string }; Returns: string

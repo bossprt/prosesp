@@ -45,6 +45,10 @@ export function ParceiroClientesPage() {
           convenios={convenios.data ?? []}
           onSalvar={async (d) => {
             const id = await exigir(supabase.rpc('parceiro_cadastrar_cliente', { p_dados: d as never }));
+            // nulo = recusado sem dizer o motivo (CPF já cadastrado ou matrícula em uso)
+            if (!id) {
+              throw { code: 'P0001', message: 'Não foi possível cadastrar com este CPF e matrícula. Use a busca ou fale com a equipe PROSESP.' };
+            }
             navigate(`/parceiro/clientes/${id}`);
           }}
         />

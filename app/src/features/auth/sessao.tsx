@@ -1,4 +1,5 @@
 import type { Session } from '@supabase/supabase-js';
+import { useQueryClient } from '@tanstack/react-query';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { useAcesso, type Acesso } from '../../lib/permissoes';
 import { supabase } from '../../lib/supabase';
@@ -17,14 +18,22 @@ export function SessaoProvider({ children }: { children: ReactNode }) {
   const [sessao, setSessao] = useState<Session | null>(null);
   const [iniciando, setIniciando] = useState(true);
 
+  const queryClient = useQueryClient();
   useEffect(() => {
+    let usuarioAtual: string | undefined;
     supabase.auth.getSession().then(({ data }) => {
+      usuarioAtual = data.session?.user.id;
       setSessao(data.session);
       setIniciando(false);
     });
-    const { data } = supabase.auth.onAuthStateChange((_evento, s) => setSessao(s));
+    const { data } = supabase.auth.onAuthStateChange((_evento, s) => {
+      // saiu ou trocou de usuário: nada do anterior pode aparecer na tela do próximo
+      if (s?.user.id !== usuarioAtual) queryClient.clear();
+      usuarioAtual = s?.user.id;
+      setSessao(s);
+    });
     return () => data.subscription.unsubscribe();
-  }, []);
+  }, [queryClient]);
 
   const consulta = useAcesso(sessao?.user.id);
   const acesso = consulta.data ?? null;

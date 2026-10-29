@@ -32,6 +32,19 @@ function dataBr(iso: string): string {
   return `${d}/${m}/${a}`;
 }
 
+function somarDia(iso: string): string {
+  const d = new Date(`${iso}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + 1);
+  return d.toISOString().slice(0, 10);
+}
+
+/** Vigência encerrada hoje: [início, amanhã). Se ainda não começou, fica só o primeiro dia. */
+export function vigenciaEncerrada(r: string, hoje: string): string {
+  const inicio = /^\[([^,]+),/.exec(r)?.[1] ?? hoje;
+  const fim = somarDia(inicio > hoje ? inicio : hoje);
+  return `[${inicio},${fim})`;
+}
+
 export function vigenciaTexto(r: string): string {
   const m = /^\[([^,]*),([^)\]]*)[)\]]$/.exec(r?.trim() ?? '');
   if (!m) return r;

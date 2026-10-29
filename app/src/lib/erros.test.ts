@@ -24,6 +24,15 @@ describe('mensagemErro', () => {
   it('mensagem do banco em português passa direto', () => {
     expect(mensagemErro({ code: 'P0001', message: 'CPF inválido.' })).toBe('CPF inválido.');
   });
+  it('valor fora do permitido, campo obrigatório e formato inválido', () => {
+    expect(mensagemErro({ code: '23514', message: 'violates check constraint "convenios_dia_vencimento_check"' })).toBe(
+      'Algum valor está fora do permitido. Confira os campos.',
+    );
+    expect(mensagemErro({ code: '23502', message: 'null value in column' })).toBe('Preencha os campos obrigatórios.');
+    expect(mensagemErro({ code: '22P02', message: 'invalid input syntax for type integer' })).toBe(
+      'Algum campo está com formato inválido.',
+    );
+  });
   it('sem conexão', () => {
     expect(mensagemErro(new TypeError('Failed to fetch'))).toBe('Sem conexão com o servidor. Tente de novo.');
   });

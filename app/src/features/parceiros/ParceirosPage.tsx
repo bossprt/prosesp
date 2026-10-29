@@ -2,17 +2,13 @@ import { useState, type FormEvent } from 'react';
 import { Aviso, Botao, Campo, Pagina, Selecao, Tabela } from '../../components/ui';
 import type { TablesInsert } from '../../lib/database.types';
 import { exigir, useAcao, useConsulta } from '../../lib/dados';
+import { mensagemErro } from '../../lib/erros';
 import { formatarCelular } from '../../lib/mascaras';
+import { TIPOS_CONTA, TIPOS_PIX } from '../../lib/opcoes';
 import { supabase } from '../../lib/supabase';
 import { useSessao } from '../auth/sessao';
 import { ParceiroForm, type DadosParceiro } from './ParceiroForm';
 
-const TIPOS_CONTA = [
-  { valor: 'corrente', rotulo: 'Corrente' },
-  { valor: 'poupanca', rotulo: 'Poupança' },
-  { valor: 'pagamento', rotulo: 'Pagamento' },
-];
-const TIPOS_PIX = ['cpf', 'cnpj', 'email', 'celular', 'aleatoria'].map((v) => ({ valor: v, rotulo: v }));
 
 export function ParceirosPage() {
   const { pode } = useSessao();
@@ -60,12 +56,11 @@ export function ParceirosPage() {
             key={selecionado}
             inicial={atual && { ...atual, tipo_pessoa: atual.tipo_pessoa as DadosParceiro['tipo_pessoa'] }}
             onSalvar={async (d) => {
-              await salvar.mutateAsync(d).catch(() => {
-                throw new Error(salvar.erro || 'Não foi possível salvar.');
+              await salvar.mutateAsync(d).catch((e) => {
+                throw new Error(mensagemErro(e));
               });
             }}
           />
-          <Aviso>{salvar.erro}</Aviso>
         </div>
       )}
 

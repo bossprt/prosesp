@@ -1,17 +1,14 @@
 import { useState } from 'react';
 import { Aviso, Botao, Campo, Pagina, Selecao } from '../../components/ui';
 import { exigir, useAcao, useConsulta } from '../../lib/dados';
+import { vigenciaEncerrada } from '../../lib/faixas';
 import { supabase } from '../../lib/supabase';
 import { useSessao } from '../auth/sessao';
 import { useConveniosOpcoes } from '../convenios/useConvenios';
 import { LinhaForm, type NovaLinha } from './LinhaForm';
 import { LinhasTabela, type LinhaView } from './LinhasTabela';
 
-function amanha(): string {
-  const d = new Date();
-  d.setDate(d.getDate() + 1);
-  return d.toLocaleDateString('sv-SE'); // AAAA-MM-DD no fuso local
-}
+const hoje = () => new Date().toLocaleDateString('sv-SE'); // AAAA-MM-DD no fuso local
 
 export function TabelasPage() {
   const { pode } = useSessao();
@@ -40,10 +37,8 @@ export function TabelasPage() {
             .order('prazo'),
         )) ?? [];
       const usadas = new Set(
-        dados.length
-          ? ((await exigir(supabase.from('simulacoes').select('linha_id').in('linha_id', dados.map((d) => d.id)))) ?? []).map(
-              (s) => s.linha_id,
-            )
+        dados.length && podeEditar
+          ? ((await exigir(supabase.rpc('linhas_usadas', { p_linha_ids: dados.map((d) => d.id) }))) ?? [])
           : [],
       );
       return dados.map((d) => ({
@@ -93,10 +88,8 @@ export function TabelasPage() {
     [['linhas', tabelaId]],
   );
   const encerrar = useAcao(
-    async (l: LinhaView) => {
-      const inicio = /^\[([^,]+),/.exec(l.vigencia)?.[1];
-      await exigir(supabase.from('tabela_linhas').update({ vigencia: `[${inicio},${amanha()})` }).eq('id', l.id));
-    },
+    (l: LinhaView) =>
+      exigir(supabase.from('tabela_linhas').update({ vigencia: vigenciaEncerrada(l.vigencia, hoje()) }).eq('id', l.id)),
     [['linhas', tabelaId]],
   );
   const excluir = useAcao((id: string) => exigir(supabase.from('tabela_linhas').delete().eq('id', id)), [['linhas', tabelaId]]);

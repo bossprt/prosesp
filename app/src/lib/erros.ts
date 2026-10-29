@@ -14,6 +14,14 @@ export function mensagemErro(e: unknown): string {
       return 'Já existe uma linha de tabela que atende este mesmo caso.';
     case '42501':
       return 'Você não tem permissão para esta ação.';
+    case '23514':
+      return 'Algum valor está fora do permitido. Confira os campos.';
+    case '23502':
+      return 'Preencha os campos obrigatórios.';
+    case '22P02':
+    case '22007':
+    case '22008':
+      return 'Algum campo está com formato inválido.';
     case 'P0001':
       return message || GENERICA;
   }

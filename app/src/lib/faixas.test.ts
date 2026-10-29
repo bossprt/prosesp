@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { faixaAnos, faixaReais, vigenciaTexto } from './faixas';
+import { faixaAnos, faixaReais, vigenciaEncerrada, vigenciaTexto } from './faixas';
 
 describe('faixas', () => {
   it('faixa de valor em centavos vira texto em reais (fim exclusivo do banco)', () => {
@@ -11,6 +11,11 @@ describe('faixas', () => {
   it('faixa de idade', () => {
     expect(faixaAnos('[18,66)')).toBe('18 a 65 anos');
     expect(faixaAnos('(,)')).toBe('qualquer idade');
+  });
+
+  it('encerrar vigência termina hoje; se a linha ainda não começou, fica só o primeiro dia', () => {
+    expect(vigenciaEncerrada('[2026-01-01,)', '2026-10-28')).toBe('[2026-01-01,2026-10-29)');
+    expect(vigenciaEncerrada('[2026-12-01,)', '2026-10-28')).toBe('[2026-12-01,2026-12-02)');
   });
 
   it('vigência', () => {

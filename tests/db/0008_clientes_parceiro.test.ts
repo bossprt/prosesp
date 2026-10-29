@@ -160,9 +160,8 @@ describe('0008 acesso do parceiro', () => {
         vinculo_id: s.vinculo,
         matricula: '1',
       };
-      expect(await erroDe(c, `select public.parceiro_cadastrar_cliente($1)`, [dados])).toBe(
-        'Este CPF já está cadastrado. Use a busca por CPF e matrícula.',
-      );
+      const r = await c.query(`select public.parceiro_cadastrar_cliente($1) as id`, [dados]);
+      expect(r.rows[0].id).toBeNull();
     });
   });
 

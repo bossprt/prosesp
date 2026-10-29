@@ -547,6 +547,9 @@ isOneToOne: false
 "aprovar_alteracao":
 { Args: { "p_id": string }; Returns: undefined
                            },
+"cadastrar_cliente":
+{ Args: { "p_dados": Json }; Returns: string
+                           },
 "catalogo_campos_cliente":
 { Args: Record<PropertyKey, never>; Returns: {
               "chave": string,"rotulo": string

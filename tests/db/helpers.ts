@@ -115,4 +115,6 @@ export async function comoAnon(c: pg.PoolClient): Promise<void> {
 /** Volta a agir como o dono do banco (sem RLS). */
 export async function comoDono(c: pg.PoolClient): Promise<void> {
   await c.query('reset role');
+  // sem usuário logado (como o pg_cron e os scripts de manutenção)
+  await c.query(`select set_config('request.jwt.claims', '', true)`);
 }

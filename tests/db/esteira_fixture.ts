@@ -31,6 +31,41 @@ export async function digitar(c: pg.PoolClient, s: Cenario, extra: Record<string
   return r.rows[0].id;
 }
 
+let seqAdeFixture = 7000000;
+/**
+ * Digita, leva a aguardando_pagamento com ADE (e ADE de mensalidade se houver proposta) e libera
+ * como um financeiro novo. Exige convênio com dia de corte/vencimento. Volta a dono.
+ */
+export async function contratoLiberado(
+  c: pg.PoolClient,
+  s: Cenario,
+  data: string,
+  proposta: string | null = null,
+): Promise<string> {
+  const id = await digitar(c, s);
+  await forcarFase(c, id, 'aguardando_pagamento', true);
+  await c.query(`update public.contratos set mensalidade_proposta = $2 where id = $1`, [id, proposta]);
+  seqAdeFixture += 1;
+  await c.query(
+    `insert into public.contrato_averbacoes (contrato_id, convenio_id, matricula_id, ade, situacao, valor_averbado)
+     select id, convenio_id, matricula_id, $2, 'ativa', valor_parcela from public.contratos where id = $1`,
+    [id, String(seqAdeFixture)],
+  );
+  if (proposta) {
+    seqAdeFixture += 1;
+    await c.query(
+      `insert into public.mensalidade_averbacoes (matricula_id, convenio_id, contrato_origem_id, ade, situacao, valor_averbado)
+       select matricula_id, convenio_id, id, $2, 'proposta', $3 from public.contratos where id = $1`,
+      [id, String(seqAdeFixture), proposta],
+    );
+  }
+  const fin = await criarUsuarioTeste(c, 'financeiro');
+  await comoUsuario(c, fin);
+  await c.query(`select public.liberar_credito($1, $2::date)`, [id, data]);
+  await comoDono(c);
+  return id;
+}
+
 /** Coloca o contrato direto numa fase (como dono), sem passar pela esteira. */
 export async function forcarFase(c: pg.PoolClient, id: string, fase: string, travar = false): Promise<void> {
   await c.query(

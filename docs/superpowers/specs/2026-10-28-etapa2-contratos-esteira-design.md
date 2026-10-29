@@ -67,6 +67,7 @@ Substituir a esteira "na base do clique" do Workbank: o contrato é digitado uma
 4. **Comissão [decidido]:** dentro da esteira **ninguém** vê comissão, nem o operador. Percentual e base ficam em `contrato_comissao_regra` (1:1 com o contrato e com cada versão), legível só com a permissão nova `comissoes.ver` (padrão: administrador, gerente, financeiro). `contratos` não guarda comissão. O parceiro terá uma **tela própria fora da esteira** com a produção dele e as tabelas de repasse configuradas para ele — entra na Etapa 6 (indica comissão por parceiro, pendência da PROSESP).
 5. **Precisão:** dinheiro `numeric(14,2)`; fator `numeric(12,8)`; percentuais `numeric(7,4)` — iguais às tabelas da Etapa 1.
 6. **Pagamento parcial e reaverbação:** pagamentos ficam em `parcela_pagamentos` (parcela, valor, competência de desconto, averbação de origem). A parcela aponta para a averbação ativa; ao reaverbar, parcelas `parcial` e `aberta` passam para o ADE novo, mas os pagamentos já recebidos continuam com a averbação de origem. O saldo da parcela = valor − soma dos pagamentos.
+6b. **Migração de matrícula com margem menor [pendente PROSESP: alongar ou cobrar à parte]:** `migrar_matricula` aceita um **valor averbado** menor que a parcela contratada (ex.: parcela R$ 200, nova matrícula só tem margem para R$ 150). A averbação nova guarda `valor_averbado`; o contrato mantém o valor contratado. A diferença de cada competência (R$ 50) fica como **diferença em aberto** na parcela (saldo = valor − pagamentos), visível na inadimplência. Quando a PROSESP definir a regra, ela vira uma ação sobre essas diferenças (alongar o prazo ou gerar cobrança). Referência: no gestao-contratos a migração move contrato + ADE para a nova matrícula, mas a reaverbação de empréstimo nunca muda o valor da parcela — este caso não existe lá.
 7. **Estados e catálogo:** averbação (contrato e mensalidade): `proposta`, `ativa`, `substituida`, `migrada`, `cancelamento_pendente`, `cancelada`. Pendências da equipe: "cancelar na averbadora" e "ajustar na averbadora". Tipo de documento novo: `requerimento_cancelamento`.
 
 ## 3. Modelo de dados **[chamada do builder]**
@@ -115,3 +116,4 @@ RLS em todas as tabelas novas; parceiro lê só contratos com `parceiro_id` dele
 4. Demais campos obrigatórios na digitação.
 5. Mensalidade menor num contrato novo: manter a atual (padrão) ou reduzir.
 6. Liberar ou não a visão de todos os contratos do cliente para o parceiro.
+7. Migração de matrícula com margem menor: alongar o contrato ou cobrar a diferença à parte.

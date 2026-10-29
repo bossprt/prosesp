@@ -558,6 +558,9 @@ isOneToOne: false
 "cpf_valido":
 { Args: { "p": string }; Returns: boolean
                            },
+"criar_linha_tabela":
+{ Args: { "p_fator": number,"p_fim": string,"p_idade_max": number,"p_idade_min": number,"p_inicio": string,"p_percentual": number,"p_prazo": number,"p_tabela_id": string,"p_tipo": Database["public"]['Enums']["tipo_contrato"],"p_valor_max": number,"p_valor_mensalidade": number,"p_valor_min": number,"p_vinculo_id": string }; Returns: string
+                           },
 "definir_conta_principal":
 { Args: { "p_conta_id": string }; Returns: undefined
                            },

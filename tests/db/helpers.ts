@@ -52,6 +52,40 @@ export async function erroDe(c: pg.PoolClient, sql: string, params: unknown[] = 
   throw new Error(`Era esperado erro em: ${sql}`);
 }
 
+/** Gera um CPF válido (11 dígitos) a partir de um número base de 9 dígitos. */
+export function gerarCpf(base: number): string {
+  const d = String(base).padStart(9, '0').slice(-9).split('').map(Number);
+  const dv = (nums: number[]) => {
+    const s = nums.reduce((acc, n, i) => acc + n * (nums.length + 1 - i), 0) % 11;
+    return s < 2 ? 0 : 11 - s;
+  };
+  d.push(dv(d));
+  d.push(dv(d));
+  return d.join('');
+}
+
+let seqCpf = 100000000 + (Date.now() % 100000) * 1000;
+/** Cria cliente com matrícula no Governo do Acre / Efetivo (como dono). */
+export async function criarClienteTeste(
+  c: pg.PoolClient,
+  opts: { cpf?: string; matricula?: string; nome?: string } = {},
+): Promise<{ id: string; cpf: string; matricula: string }> {
+  seqCpf += 1;
+  const cpf = opts.cpf ?? gerarCpf(seqCpf);
+  const matricula = opts.matricula ?? String(seqCpf);
+  const { rows } = await c.query(
+    `insert into public.clientes (cpf, nome, celular, whatsapp) values ($1, $2, '68999990000', '68999990000') returning id, cpf`,
+    [cpf, opts.nome ?? 'Cliente Teste'],
+  );
+  await c.query(
+    `insert into public.cliente_matriculas (cliente_id, convenio_id, vinculo_id, matricula)
+     select $1, c.id, v.id, $2 from public.convenios c join public.convenio_vinculos v on v.convenio_id = c.id
+     where c.nome = 'Governo do Acre' and v.nome = 'Efetivo'`,
+    [rows[0].id, matricula],
+  );
+  return { id: rows[0].id, cpf: rows[0].cpf, matricula };
+}
+
 let seqDoc = 0;
 /** Cria parceiro PJ com CNPJ fictício único (como dono). Devolve o uuid. */
 export async function criarParceiroTeste(c: pg.PoolClient, nome = 'Parceiro Teste'): Promise<string> {

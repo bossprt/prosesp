@@ -21,6 +21,29 @@ export function lerReais(s: string): string {
   return `${inteiro.replace(/\./g, '').replace(/^0+(?=\d)/, '')}.${centavos.padEnd(2, '0')}`;
 }
 
+/** Texto decimal ("1000.5", "-15.50") → centavos inteiros, sem ponto flutuante. */
+function centavos(s: string): bigint {
+  const t = (s ?? '').trim() || '0';
+  const negativo = t.startsWith('-');
+  const [inteiro, frac = ''] = t.replace(/^[-+]/, '').split('.');
+  const c = BigInt(inteiro || '0') * 100n + BigInt((frac + '00').slice(0, 2));
+  return negativo ? -c : c;
+}
+
+function deCentavos(c: bigint): string {
+  const negativo = c < 0n;
+  const a = negativo ? -c : c;
+  return `${negativo ? '-' : ''}${a / 100n}.${String(a % 100n).padStart(2, '0')}`;
+}
+
+export function somarReais(...valores: string[]): string {
+  return deCentavos(valores.reduce((t, v) => t + centavos(v), 0n));
+}
+
+export function subtrairReais(a: string, ...b: string[]): string {
+  return deCentavos(b.reduce((t, v) => t - centavos(v), centavos(a)));
+}
+
 export function cpfValido(s: string): boolean {
   const bruto = soDigitos(s);
   if (bruto.length < 1 || bruto.length > 11) return false;

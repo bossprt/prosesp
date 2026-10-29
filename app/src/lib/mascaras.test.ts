@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cpfValido, formatarCelular, formatarCpf, formatarReais, lerReais, soDigitos } from './mascaras';
+import { cpfValido, formatarCelular, formatarCpf, formatarReais, lerReais, soDigitos, somarReais, subtrairReais } from './mascaras';
 
 describe('mascaras', () => {
   it('formatarReais(1234.5) = "R$ 1.234,50"', () => {
@@ -27,6 +27,13 @@ describe('mascaras', () => {
     expect(cpfValido('529.982.247-25')).toBe(true);
     expect(cpfValido('111.111.111-11')).toBe(false);
     expect(cpfValido('012.345.678-91')).toBe(false);
+  });
+
+  it('somarReais e subtrairReais com centavos exatos', () => {
+    expect(somarReais('0.10', '0.20')).toBe('0.30');
+    expect(somarReais()).toBe('0.00');
+    expect(subtrairReais('1000.00', '400.00', '0.01')).toBe('599.99');
+    expect(subtrairReais('10', '25.5')).toBe('-15.50');
   });
 
   it('formatarCpf e formatarCelular', () => {

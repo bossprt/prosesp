@@ -5,6 +5,7 @@ import { formatarCelular, formatarCpf } from '../../lib/mascaras';
 import { TIPOS_CONTA, TIPOS_PIX } from '../../lib/opcoes';
 import { supabase } from '../../lib/supabase';
 import { useConveniosOpcoes } from '../convenios/useConvenios';
+import { MensalidadesSecao } from '../mensalidades/MensalidadesSecao';
 import { ClienteDadosForm, type DadosCliente } from './ClienteDadosForm';
 import { OQueFalta } from './OQueFalta';
 
@@ -74,6 +75,7 @@ export function ClienteDetalhe({ clienteId, modo }: { clienteId: string; modo: M
 
       <Contas clienteId={clienteId} modo={modo} />
       {modo === 'equipe' && <Beneficiarios clienteId={clienteId} />}
+      {modo === 'equipe' && <MensalidadesSecao clienteId={clienteId} />}
       <Documentos clienteId={clienteId} modo={modo} />
       {modo === 'equipe' ? <Historico clienteId={clienteId} /> : <MinhasPropostas clienteId={clienteId} />}
     </div>

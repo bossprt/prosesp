@@ -4,6 +4,10 @@ import { AprovacoesPage } from './features/aprovacoes/AprovacoesPage';
 import { AuditoriaPage } from './features/auditoria/AuditoriaPage';
 import { ClienteEquipePage, ClientesPage } from './features/clientes/ClientesPage';
 import { ContratoPage } from './features/contratos/ContratoPage';
+import { DigitacaoPage } from './features/contratos/DigitacaoPage';
+import { MeusContratosPage } from './features/parceiro/MeusContratosPage';
+import { PendenciasAverbadoraPage } from './features/pendencias/PendenciasAverbadoraPage';
+import { CandidatosPrejuizoPage } from './features/prejuizo/CandidatosPrejuizoPage';
 import { ConveniosPage } from './features/convenios/ConveniosPage';
 import { EsteiraPage } from './features/esteira/EsteiraPage';
 import { ParceiroClientePage, ParceiroClientesPage } from './features/parceiro/ParceiroClientesPage';
@@ -17,7 +21,13 @@ import { UsuariosPage } from './features/usuarios/UsuariosPage';
 export const rotasProtegidas: { path: string; element: ReactElement }[] = [
   { path: '/simulador', element: <SimuladorPage /> },
   { path: '/esteira', element: <EsteiraPage /> },
+  { path: '/contratos/novo', element: <DigitacaoPage /> },
   { path: '/contratos/:id', element: <ContratoPage /> },
+  { path: '/contratos/:id/editar', element: <DigitacaoPage /> },
+  { path: '/parceiro/pre-digitacao', element: <DigitacaoPage /> },
+  { path: '/parceiro/contratos', element: <MeusContratosPage /> },
+  { path: '/pendencias-averbadora', element: <PendenciasAverbadoraPage /> },
+  { path: '/prejuizo', element: <CandidatosPrejuizoPage /> },
   { path: '/clientes', element: <ClientesPage /> },
   { path: '/clientes/:id', element: <ClienteEquipePage /> },
   { path: '/parceiro/clientes', element: <ParceiroClientesPage /> },

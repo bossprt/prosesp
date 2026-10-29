@@ -39,6 +39,19 @@ export async function criarUsuarioTeste(
   return id;
 }
 
+let seqDoc = 0;
+/** Cria parceiro PJ com CNPJ fictício único (como dono). Devolve o uuid. */
+export async function criarParceiroTeste(c: pg.PoolClient, nome = 'Parceiro Teste'): Promise<string> {
+  seqDoc += 1;
+  const doc = String(90000000000000 + Date.now() % 1000000 * 100 + seqDoc).slice(0, 14);
+  const { rows } = await c.query(
+    `insert into public.parceiros (tipo_pessoa, documento, nome, celular, whatsapp)
+     values ('PJ', $1, $2, '68999990000', '68999990000') returning id`,
+    [doc, nome],
+  );
+  return rows[0].id;
+}
+
 /** Passa a agir como o usuário logado (RLS valendo). */
 export async function comoUsuario(c: pg.PoolClient, userId: string): Promise<void> {
   await c.query('set local role authenticated');

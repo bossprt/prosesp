@@ -39,6 +39,19 @@ export async function criarUsuarioTeste(
   return id;
 }
 
+/** Roda a consulta isolada num savepoint e devolve a mensagem de erro (ou falha se não der erro). */
+export async function erroDe(c: pg.PoolClient, sql: string, params: unknown[] = []): Promise<string> {
+  await c.query('savepoint esperar_erro');
+  try {
+    await c.query(sql, params);
+  } catch (e) {
+    await c.query('rollback to savepoint esperar_erro');
+    return (e as Error).message;
+  }
+  await c.query('release savepoint esperar_erro');
+  throw new Error(`Era esperado erro em: ${sql}`);
+}
+
 let seqDoc = 0;
 /** Cria parceiro PJ com CNPJ fictício único (como dono). Devolve o uuid. */
 export async function criarParceiroTeste(c: pg.PoolClient, nome = 'Parceiro Teste'): Promise<string> {

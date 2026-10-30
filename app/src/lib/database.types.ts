@@ -605,9 +605,9 @@ isOneToOne: false
                   ]
                 },"contratos": {
                   Row: {
-                    "agente_id": string | null,"cliente_id": string,"convenio_id": string,"criado_em": string,"criado_por": string | null,"data_liberacao": string | null,"fase": Database["public"]['Enums']["fase_contrato"],"fase_desde": string,"fase_retorno": Database["public"]['Enums']["fase_contrato"] | null,"fator": number,"id": string,"importacao_id": string | null,"legado": boolean,"legado_importado_em": string | null,"legado_importado_por": string | null,"linha_tabela_id": string | null,"matricula_id": string,"mensalidade_proposta": number | null,"numero": number,"numero_legado": string | null,"origem_id": string | null,"parceiro_id": string | null,"prazo": number,"primeiro_vencimento": string | null,"quitados_legado": string | null,"situacao": Database["public"]['Enums']["situacao_contrato"],"tipo": Database["public"]['Enums']["tipo_contrato"],"total_descontos": number,"total_dividas_externas": number,"total_quitado": number,"valor_bruto": number,"valor_liquido": number | null,"valor_mensalidade_tabela": number | null,"valor_parcela": number,"valores_travados_em": string | null,"versao": number,"vinculo_id": string,"_dados_do_contrato": Json | null
+                    "agente_id": string | null,"cliente_id": string,"convenio_id": string,"criado_em": string,"criado_por": string | null,"data_liberacao": string | null,"fase": Database["public"]['Enums']["fase_contrato"],"fase_desde": string,"fase_retorno": Database["public"]['Enums']["fase_contrato"] | null,"fator": number,"id": string,"importacao_id": string | null,"legado": boolean,"legado_importado_em": string | null,"legado_importado_por": string | null,"linha_tabela_id": string | null,"matricula_id": string,"mensalidade_proposta": number | null,"numero": number,"numero_legado": string | null,"origem_id": string | null,"parceiro_id": string | null,"prazo": number,"primeiro_vencimento": string | null,"quitados_legado": string | null,"situacao": Database["public"]['Enums']["situacao_contrato"],"tipo": Database["public"]['Enums']["tipo_contrato"],"total_descontos": number,"total_dividas_externas": number,"total_quitado": number,"valor_bruto": number,"valor_liquido": number | null,"valor_mensalidade_tabela": number | null,"valor_parcela": number,"valores_travados_em": string | null,"versao": number,"vinculo_id": string,"_assinatura_valores": Json | null,"_dados_do_contrato": Json | null
                   }
-                  ComputedFields: "_dados_do_contrato"
+                  ComputedFields: "_assinatura_valores" | "_dados_do_contrato"
                   Insert: {
                     "agente_id"?: string | null,"cliente_id": string,"convenio_id": string,"criado_em"?: string,"criado_por"?: string | null,"data_liberacao"?: string | null,"fase": Database["public"]['Enums']["fase_contrato"],"fase_desde"?: string,"fase_retorno"?: Database["public"]['Enums']["fase_contrato"] | null,"fator": number,"id"?: string,"importacao_id"?: string | null,"legado"?: boolean,"legado_importado_em"?: string | null,"legado_importado_por"?: string | null,"linha_tabela_id"?: string | null,"matricula_id": string,"mensalidade_proposta"?: number | null,"numero"?: number,"numero_legado"?: string | null,"origem_id"?: string | null,"parceiro_id"?: string | null,"prazo": number,"primeiro_vencimento"?: string | null,"quitados_legado"?: string | null,"situacao"?: Database["public"]['Enums']["situacao_contrato"],"tipo": Database["public"]['Enums']["tipo_contrato"],"total_descontos"?: number,"total_dividas_externas"?: number,"total_quitado"?: number,"valor_bruto": number,"valor_liquido"?: never,"valor_mensalidade_tabela"?: number | null,"valor_parcela": number,"valores_travados_em"?: string | null,"versao"?: number,"vinculo_id": string
                   }
@@ -1258,11 +1258,20 @@ isOneToOne: false
 "_assinatura_atualizar":
 { Args: { "p_evidencias": Json,"p_pdf_assinado_caminho": string,"p_situacao": string,"p_zapsign_token": string }; Returns: string
                            },
+"_assinatura_cancelamento_feito":
+{ Args: { "p_erro": string,"p_id": string,"p_ok": boolean }; Returns: undefined
+                           },
+"_assinatura_cancelar_aberta":
+{ Args: { "p_contrato_id": string,"p_incluir_aprovado": boolean }; Returns: undefined
+                           },
 "_assinatura_falhou":
 { Args: { "p_erro": string,"p_id": string }; Returns: undefined
                            },
 "_assinatura_registrar_envio":
 { Args: { "p_assinantes": Json,"p_id": string,"p_pdf_caminho": string,"p_zapsign_token": string }; Returns: undefined
+                           },
+"_assinatura_valores":
+{ Args: { "k": Omit<Database["public"]['Tables']["contratos"]['Row'], Database["public"]['Tables']["contratos"]['ComputedFields']> }; Returns: Json
                            },
 "_calcular_contrato":
 { Args: { "p_dados": Json,"p_gravar": boolean }; Returns: Json
@@ -1327,6 +1336,9 @@ isOneToOne: false
                            },
 "_dinheiro":
 { Args: { "p": string }; Returns: number
+                           },
+"_editar_contrato_interno":
+{ Args: { "p_dados": Json,"p_id": string,"p_motivo": string }; Returns: undefined
                            },
 "_exigir_cliente_para_contrato":
 { Args: { "p_cliente_id": string }; Returns: undefined
@@ -1476,11 +1488,17 @@ isOneToOne: false
 "aprovar_alteracao":
 { Args: { "p_id": string }; Returns: undefined
                            },
+"aprovar_assinatura":
+{ Args: { "p_contrato_id": string }; Returns: undefined
+                           },
 "aprovar_pre_digitacao":
 { Args: { "p_id": string }; Returns: Json
                            },
 "assinatura_preparar":
 { Args: { "p_contrato_id": string }; Returns: Json
+                           },
+"assinaturas_lista":
+{ Args: { "p_tipo": string }; Returns: Json[]
                            },
 "assinaturas_vencer":
 { Args: { "p_hoje": string }; Returns: number

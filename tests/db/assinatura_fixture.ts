@@ -25,6 +25,13 @@ export async function contratoAverbado(c: pg.PoolClient, s?: Cenario): Promise<C
      select id, convenio_id, matricula_id, $2, 'ativa', valor_parcela from public.contratos where id = $1`,
     [contrato, String(seqAde)],
   );
+  seqAde += 1;
+  await c.query(
+    `insert into public.mensalidade_averbacoes (matricula_id, convenio_id, contrato_origem_id, ade, situacao, valor_averbado)
+     select matricula_id, convenio_id, id, $2, 'proposta', mensalidade_proposta from public.contratos
+     where id = $1 and mensalidade_proposta is not null`,
+    [contrato, String(seqAde)],
+  );
   return { ...base, convenio, contrato };
 }
 

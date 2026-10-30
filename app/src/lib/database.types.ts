@@ -1278,6 +1278,9 @@ isOneToOne: false
 "_imp_minha_em_andamento":
 { Args: { "p_id": string }; Returns: undefined
                            },
+"_imp_obrigatorio":
+{ Args: { "p": string,"p_mensagem": string }; Returns: string
+                           },
 "_imp_ordem_aba":
 { Args: { "p_aba": string }; Returns: number
                            },
@@ -1289,6 +1292,9 @@ isOneToOne: false
                            },
 "_imp_resultado":
 { Args: { "p_saida": Json }; Returns: Json
+                           },
+"_imp_situacao":
+{ Args: { "p": string }; Returns: Database["public"]['Enums']["situacao_contrato"]
                            },
 "_linhas_candidatas":
 { Args: { "p_convenio_id": string,"p_data": string,"p_data_nascimento": string,"p_prazo": number,"p_tipo": Database["public"]['Enums']["tipo_contrato"],"p_vinculo_id": string }; Returns: {

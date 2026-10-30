@@ -94,3 +94,23 @@ export async function gravar(c: pg.PoolClient, s: CenarioImp, d: Lote, hash?: st
   await comoDono(c);
   return { id, r };
 }
+
+let seqContrato = 1000 + (Date.now() % 100000) * 10;
+/** Linha da aba Contratos: novo, 24x R$ 122,40, bruto R$ 2.000, liberado 10/05/2024, 5 pagas, ativo. */
+export function contrato(cpf: string, matricula: string, extra: Linha = {}): Linha {
+  seqContrato += 1;
+  return {
+    linha: 2, numero_antigo: `L${seqContrato}`, cpf, convenio: 'Governo do Acre', matricula, tipo: 'novo', prazo: '24',
+    valor_parcela: '122.40', valor_bruto: '2000.00', valor_liquido: null, data_liberacao: '2024-05-10',
+    primeira_competencia: '2024-06-01', parcelas_pagas: '5', situacao: 'ativo', ade: null, parceiro: null, ...extra,
+  };
+}
+
+/** Lote de um cliente com os contratos dados (linhas 2, 3, …). */
+export function comContratos(...extras: Linha[]): Lote {
+  const cpf = novoCpf();
+  const mat = novaMatricula();
+  const d = lote(cpf, mat);
+  d.contratos = extras.map((e, i) => ({ ...contrato(cpf, mat, e), linha: i + 2 }));
+  return d;
+}

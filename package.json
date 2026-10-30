@@ -13,10 +13,10 @@
     "@supabase/supabase-js": "^2.45.4",
     "@types/pg": "^8.23.1",
     "jsdom": "^25.0.1",
+    "pdf-lib": "1.17.1",
     "pg": "^8.23.1",
     "supabase": "^2.122.0",
     "typescript": "^7.0.2",
     "vitest": "^5.0.5"
   }
 }
-

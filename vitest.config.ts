@@ -14,6 +14,13 @@ export default defineConfig({
         },
       },
       {
+        test: {
+          name: 'funcoes',
+          include: ['supabase/functions/**/*.test.ts'],
+          environment: 'node',
+        },
+      },
+      {
         root: 'app',
         esbuild: { jsx: 'automatic' },
         test: {

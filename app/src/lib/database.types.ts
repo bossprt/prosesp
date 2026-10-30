@@ -1239,17 +1239,56 @@ isOneToOne: false
 "_gravar_versao":
 { Args: { "p_contrato_id": string,"p_motivo": string }; Returns: undefined
                            },
+"_imp_aba":
+{ Args: { "p_chave": string }; Returns: string
+                           },
 "_imp_chave":
 { Args: { "p": string }; Returns: string
+                           },
+"_imp_clientes":
+{ Args: { "ctx": Json,"g": Json }; Returns: Json
                            },
 "_imp_competencia":
 { Args: { "p": string,"p_campo": string }; Returns: string
                            },
+"_imp_contratos":
+{ Args: { "ctx": Json,"g": Json }; Returns: Json
+                           },
+"_imp_convenio":
+{ Args: { "p_nome": string }; Returns: string
+                           },
+"_imp_cpf":
+{ Args: { "p": string }; Returns: string
+                           },
 "_imp_data":
 { Args: { "p": string,"p_campo": string }; Returns: string
                            },
+"_imp_falhou":
+{ Args: { "g": Json,"p_saida": Json }; Returns: Json
+                           },
 "_imp_inteiro":
 { Args: { "p": string,"p_campo": string }; Returns: number
+                           },
+"_imp_item":
+{ Args: { "p_aba": string,"p_linha": number,"p_mensagem": string,"p_tipo": string }; Returns: Json
+                           },
+"_imp_mensalidades":
+{ Args: { "ctx": Json,"g": Json }; Returns: Json
+                           },
+"_imp_minha_em_andamento":
+{ Args: { "p_id": string }; Returns: undefined
+                           },
+"_imp_ordem_aba":
+{ Args: { "p_aba": string }; Returns: number
+                           },
+"_imp_parcelas":
+{ Args: { "ctx": Json,"g": Json }; Returns: Json
+                           },
+"_imp_processar":
+{ Args: { "p_dados": Json,"p_importacao_id": string }; Returns: Json
+                           },
+"_imp_resultado":
+{ Args: { "p_saida": Json }; Returns: Json
                            },
 "_linhas_candidatas":
 { Args: { "p_convenio_id": string,"p_data": string,"p_data_nascimento": string,"p_prazo": number,"p_tipo": Database["public"]['Enums']["tipo_contrato"],"p_vinculo_id": string }; Returns: {
@@ -1376,6 +1415,18 @@ isOneToOne: false
                            },
 "gerar_mensalidades_competencia":
 { Args: { "p_competencia": string }; Returns: number
+                           },
+"importacao_concluir":
+{ Args: { "p_erros": Json,"p_importacao_id": string,"p_resumo": Json }; Returns: undefined
+                           },
+"importacao_conferir":
+{ Args: { "p_dados": Json,"p_hash"?: string }; Returns: Json
+                           },
+"importacao_gravar_lote":
+{ Args: { "p_dados": Json,"p_importacao_id": string }; Returns: Json
+                           },
+"importacao_iniciar":
+{ Args: { "p_arquivo_caminho": string,"p_arquivo_nome": string,"p_hash": string,"p_posicao": string }; Returns: string
                            },
 "liberar_credito":
 { Args: { "p_data"?: string,"p_id": string }; Returns: undefined

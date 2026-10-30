@@ -185,14 +185,14 @@ isOneToOne: false
                   ]
                 },"cliente_matriculas": {
                   Row: {
-                    "ativa": boolean,"cliente_id": string,"convenio_id": string,"id": string,"matricula": string,"matricula_normalizada": string | null,"orgao": string | null,"vinculo_id": string
+                    "ativa": boolean,"cliente_id": string,"convenio_id": string,"id": string,"importacao_id": string | null,"matricula": string,"matricula_normalizada": string | null,"orgao": string | null,"vinculo_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "ativa"?: boolean,"cliente_id": string,"convenio_id": string,"id"?: string,"matricula": string,"matricula_normalizada"?: never,"orgao"?: string | null,"vinculo_id": string
+                    "ativa"?: boolean,"cliente_id": string,"convenio_id": string,"id"?: string,"importacao_id"?: string | null,"matricula": string,"matricula_normalizada"?: never,"orgao"?: string | null,"vinculo_id": string
                   }
                   Update: {
-                    "ativa"?: boolean,"cliente_id"?: string,"convenio_id"?: string,"id"?: string,"matricula"?: string,"matricula_normalizada"?: never,"orgao"?: string | null,"vinculo_id"?: string
+                    "ativa"?: boolean,"cliente_id"?: string,"convenio_id"?: string,"id"?: string,"importacao_id"?: string | null,"matricula"?: string,"matricula_normalizada"?: never,"orgao"?: string | null,"vinculo_id"?: string
                   }
                   Relationships: [
                     {
@@ -206,6 +206,12 @@ isOneToOne: false
       columns: ["convenio_id"]
 isOneToOne: false
       referencedRelation: "convenios"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "cliente_matriculas_importacao_id_fkey"
+      columns: ["importacao_id"]
+isOneToOne: false
+      referencedRelation: "importacoes"
       referencedColumns: ["id"]
     },{
       foreignKeyName: "cliente_matriculas_vinculo_id_fkey"
@@ -243,17 +249,23 @@ isOneToOne: false
                   ]
                 },"clientes": {
                   Row: {
-                    "analfabeto": boolean | null,"atualizado_em": string,"bairro": string | null,"celular": string,"cep": string | null,"cidade": string | null,"complemento": string | null,"conjuge_cpf": string | null,"conjuge_nome": string | null,"cpf": string,"criado_em": string,"criado_por": string | null,"data_nascimento": string | null,"email": string | null,"escolaridade": string | null,"estado_civil": string | null,"id": string,"logradouro": string | null,"nome": string,"nome_mae": string | null,"nome_pai": string | null,"numero": string | null,"pep": boolean | null,"pis": string | null,"rg": string | null,"rg_orgao": string | null,"uf": string | null,"whatsapp": string
+                    "analfabeto": boolean | null,"atualizado_em": string,"bairro": string | null,"celular": string,"cep": string | null,"cidade": string | null,"complemento": string | null,"conjuge_cpf": string | null,"conjuge_nome": string | null,"cpf": string,"criado_em": string,"criado_por": string | null,"data_nascimento": string | null,"email": string | null,"escolaridade": string | null,"estado_civil": string | null,"id": string,"importacao_id": string | null,"logradouro": string | null,"nome": string,"nome_mae": string | null,"nome_pai": string | null,"numero": string | null,"pep": boolean | null,"pis": string | null,"rg": string | null,"rg_orgao": string | null,"uf": string | null,"whatsapp": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "analfabeto"?: boolean | null,"atualizado_em"?: string,"bairro"?: string | null,"celular": string,"cep"?: string | null,"cidade"?: string | null,"complemento"?: string | null,"conjuge_cpf"?: string | null,"conjuge_nome"?: string | null,"cpf": string,"criado_em"?: string,"criado_por"?: string | null,"data_nascimento"?: string | null,"email"?: string | null,"escolaridade"?: string | null,"estado_civil"?: string | null,"id"?: string,"logradouro"?: string | null,"nome": string,"nome_mae"?: string | null,"nome_pai"?: string | null,"numero"?: string | null,"pep"?: boolean | null,"pis"?: string | null,"rg"?: string | null,"rg_orgao"?: string | null,"uf"?: string | null,"whatsapp": string
+                    "analfabeto"?: boolean | null,"atualizado_em"?: string,"bairro"?: string | null,"celular": string,"cep"?: string | null,"cidade"?: string | null,"complemento"?: string | null,"conjuge_cpf"?: string | null,"conjuge_nome"?: string | null,"cpf": string,"criado_em"?: string,"criado_por"?: string | null,"data_nascimento"?: string | null,"email"?: string | null,"escolaridade"?: string | null,"estado_civil"?: string | null,"id"?: string,"importacao_id"?: string | null,"logradouro"?: string | null,"nome": string,"nome_mae"?: string | null,"nome_pai"?: string | null,"numero"?: string | null,"pep"?: boolean | null,"pis"?: string | null,"rg"?: string | null,"rg_orgao"?: string | null,"uf"?: string | null,"whatsapp": string
                   }
                   Update: {
-                    "analfabeto"?: boolean | null,"atualizado_em"?: string,"bairro"?: string | null,"celular"?: string,"cep"?: string | null,"cidade"?: string | null,"complemento"?: string | null,"conjuge_cpf"?: string | null,"conjuge_nome"?: string | null,"cpf"?: string,"criado_em"?: string,"criado_por"?: string | null,"data_nascimento"?: string | null,"email"?: string | null,"escolaridade"?: string | null,"estado_civil"?: string | null,"id"?: string,"logradouro"?: string | null,"nome"?: string,"nome_mae"?: string | null,"nome_pai"?: string | null,"numero"?: string | null,"pep"?: boolean | null,"pis"?: string | null,"rg"?: string | null,"rg_orgao"?: string | null,"uf"?: string | null,"whatsapp"?: string
+                    "analfabeto"?: boolean | null,"atualizado_em"?: string,"bairro"?: string | null,"celular"?: string,"cep"?: string | null,"cidade"?: string | null,"complemento"?: string | null,"conjuge_cpf"?: string | null,"conjuge_nome"?: string | null,"cpf"?: string,"criado_em"?: string,"criado_por"?: string | null,"data_nascimento"?: string | null,"email"?: string | null,"escolaridade"?: string | null,"estado_civil"?: string | null,"id"?: string,"importacao_id"?: string | null,"logradouro"?: string | null,"nome"?: string,"nome_mae"?: string | null,"nome_pai"?: string | null,"numero"?: string | null,"pep"?: boolean | null,"pis"?: string | null,"rg"?: string | null,"rg_orgao"?: string | null,"uf"?: string | null,"whatsapp"?: string
                   }
                   Relationships: [
-                    
+                    {
+      foreignKeyName: "clientes_importacao_id_fkey"
+      columns: ["importacao_id"]
+isOneToOne: false
+      referencedRelation: "importacoes"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"configuracoes": {
                   Row: {
@@ -271,14 +283,14 @@ isOneToOne: false
                   ]
                 },"contrato_averbacoes": {
                   Row: {
-                    "ade": string,"contrato_id": string,"convenio_id": string,"criado_em": string,"criado_por": string | null,"id": string,"matricula_id": string,"migrada_para": string | null,"situacao": Database["public"]['Enums']["situacao_averbacao"],"valor_averbado": number
+                    "ade": string,"contrato_id": string,"convenio_id": string,"criado_em": string,"criado_por": string | null,"id": string,"importacao_id": string | null,"matricula_id": string,"migrada_para": string | null,"situacao": Database["public"]['Enums']["situacao_averbacao"],"valor_averbado": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "ade": string,"contrato_id": string,"convenio_id": string,"criado_em"?: string,"criado_por"?: string | null,"id"?: string,"matricula_id": string,"migrada_para"?: string | null,"situacao": Database["public"]['Enums']["situacao_averbacao"],"valor_averbado": number
+                    "ade": string,"contrato_id": string,"convenio_id": string,"criado_em"?: string,"criado_por"?: string | null,"id"?: string,"importacao_id"?: string | null,"matricula_id": string,"migrada_para"?: string | null,"situacao": Database["public"]['Enums']["situacao_averbacao"],"valor_averbado": number
                   }
                   Update: {
-                    "ade"?: string,"contrato_id"?: string,"convenio_id"?: string,"criado_em"?: string,"criado_por"?: string | null,"id"?: string,"matricula_id"?: string,"migrada_para"?: string | null,"situacao"?: Database["public"]['Enums']["situacao_averbacao"],"valor_averbado"?: number
+                    "ade"?: string,"contrato_id"?: string,"convenio_id"?: string,"criado_em"?: string,"criado_por"?: string | null,"id"?: string,"importacao_id"?: string | null,"matricula_id"?: string,"migrada_para"?: string | null,"situacao"?: Database["public"]['Enums']["situacao_averbacao"],"valor_averbado"?: number
                   }
                   Relationships: [
                     {
@@ -298,6 +310,12 @@ isOneToOne: false
       columns: ["convenio_id"]
 isOneToOne: false
       referencedRelation: "convenios"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contrato_averbacoes_importacao_id_fkey"
+      columns: ["importacao_id"]
+isOneToOne: false
+      referencedRelation: "importacoes"
       referencedColumns: ["id"]
     },{
       foreignKeyName: "contrato_averbacoes_matricula_id_fkey"
@@ -515,14 +533,14 @@ isOneToOne: false
                   ]
                 },"contratos": {
                   Row: {
-                    "agente_id": string | null,"cliente_id": string,"convenio_id": string,"criado_em": string,"criado_por": string | null,"data_liberacao": string | null,"fase": Database["public"]['Enums']["fase_contrato"],"fase_desde": string,"fase_retorno": Database["public"]['Enums']["fase_contrato"] | null,"fator": number,"id": string,"legado": boolean,"legado_importado_em": string | null,"legado_importado_por": string | null,"linha_tabela_id": string | null,"matricula_id": string,"mensalidade_proposta": number | null,"numero": number,"origem_id": string | null,"parceiro_id": string | null,"prazo": number,"primeiro_vencimento": string | null,"situacao": Database["public"]['Enums']["situacao_contrato"],"tipo": Database["public"]['Enums']["tipo_contrato"],"total_descontos": number,"total_dividas_externas": number,"total_quitado": number,"valor_bruto": number,"valor_liquido": number | null,"valor_mensalidade_tabela": number | null,"valor_parcela": number,"valores_travados_em": string | null,"versao": number,"vinculo_id": string,"_dados_do_contrato": Json | null
+                    "agente_id": string | null,"cliente_id": string,"convenio_id": string,"criado_em": string,"criado_por": string | null,"data_liberacao": string | null,"fase": Database["public"]['Enums']["fase_contrato"],"fase_desde": string,"fase_retorno": Database["public"]['Enums']["fase_contrato"] | null,"fator": number,"id": string,"importacao_id": string | null,"legado": boolean,"legado_importado_em": string | null,"legado_importado_por": string | null,"linha_tabela_id": string | null,"matricula_id": string,"mensalidade_proposta": number | null,"numero": number,"numero_legado": string | null,"origem_id": string | null,"parceiro_id": string | null,"prazo": number,"primeiro_vencimento": string | null,"quitados_legado": string | null,"situacao": Database["public"]['Enums']["situacao_contrato"],"tipo": Database["public"]['Enums']["tipo_contrato"],"total_descontos": number,"total_dividas_externas": number,"total_quitado": number,"valor_bruto": number,"valor_liquido": number | null,"valor_mensalidade_tabela": number | null,"valor_parcela": number,"valores_travados_em": string | null,"versao": number,"vinculo_id": string,"_dados_do_contrato": Json | null
                   }
                   ComputedFields: "_dados_do_contrato"
                   Insert: {
-                    "agente_id"?: string | null,"cliente_id": string,"convenio_id": string,"criado_em"?: string,"criado_por"?: string | null,"data_liberacao"?: string | null,"fase": Database["public"]['Enums']["fase_contrato"],"fase_desde"?: string,"fase_retorno"?: Database["public"]['Enums']["fase_contrato"] | null,"fator": number,"id"?: string,"legado"?: boolean,"legado_importado_em"?: string | null,"legado_importado_por"?: string | null,"linha_tabela_id"?: string | null,"matricula_id": string,"mensalidade_proposta"?: number | null,"numero"?: number,"origem_id"?: string | null,"parceiro_id"?: string | null,"prazo": number,"primeiro_vencimento"?: string | null,"situacao"?: Database["public"]['Enums']["situacao_contrato"],"tipo": Database["public"]['Enums']["tipo_contrato"],"total_descontos"?: number,"total_dividas_externas"?: number,"total_quitado"?: number,"valor_bruto": number,"valor_liquido"?: never,"valor_mensalidade_tabela"?: number | null,"valor_parcela": number,"valores_travados_em"?: string | null,"versao"?: number,"vinculo_id": string
+                    "agente_id"?: string | null,"cliente_id": string,"convenio_id": string,"criado_em"?: string,"criado_por"?: string | null,"data_liberacao"?: string | null,"fase": Database["public"]['Enums']["fase_contrato"],"fase_desde"?: string,"fase_retorno"?: Database["public"]['Enums']["fase_contrato"] | null,"fator": number,"id"?: string,"importacao_id"?: string | null,"legado"?: boolean,"legado_importado_em"?: string | null,"legado_importado_por"?: string | null,"linha_tabela_id"?: string | null,"matricula_id": string,"mensalidade_proposta"?: number | null,"numero"?: number,"numero_legado"?: string | null,"origem_id"?: string | null,"parceiro_id"?: string | null,"prazo": number,"primeiro_vencimento"?: string | null,"quitados_legado"?: string | null,"situacao"?: Database["public"]['Enums']["situacao_contrato"],"tipo": Database["public"]['Enums']["tipo_contrato"],"total_descontos"?: number,"total_dividas_externas"?: number,"total_quitado"?: number,"valor_bruto": number,"valor_liquido"?: never,"valor_mensalidade_tabela"?: number | null,"valor_parcela": number,"valores_travados_em"?: string | null,"versao"?: number,"vinculo_id": string
                   }
                   Update: {
-                    "agente_id"?: string | null,"cliente_id"?: string,"convenio_id"?: string,"criado_em"?: string,"criado_por"?: string | null,"data_liberacao"?: string | null,"fase"?: Database["public"]['Enums']["fase_contrato"],"fase_desde"?: string,"fase_retorno"?: Database["public"]['Enums']["fase_contrato"] | null,"fator"?: number,"id"?: string,"legado"?: boolean,"legado_importado_em"?: string | null,"legado_importado_por"?: string | null,"linha_tabela_id"?: string | null,"matricula_id"?: string,"mensalidade_proposta"?: number | null,"numero"?: number,"origem_id"?: string | null,"parceiro_id"?: string | null,"prazo"?: number,"primeiro_vencimento"?: string | null,"situacao"?: Database["public"]['Enums']["situacao_contrato"],"tipo"?: Database["public"]['Enums']["tipo_contrato"],"total_descontos"?: number,"total_dividas_externas"?: number,"total_quitado"?: number,"valor_bruto"?: number,"valor_liquido"?: never,"valor_mensalidade_tabela"?: number | null,"valor_parcela"?: number,"valores_travados_em"?: string | null,"versao"?: number,"vinculo_id"?: string
+                    "agente_id"?: string | null,"cliente_id"?: string,"convenio_id"?: string,"criado_em"?: string,"criado_por"?: string | null,"data_liberacao"?: string | null,"fase"?: Database["public"]['Enums']["fase_contrato"],"fase_desde"?: string,"fase_retorno"?: Database["public"]['Enums']["fase_contrato"] | null,"fator"?: number,"id"?: string,"importacao_id"?: string | null,"legado"?: boolean,"legado_importado_em"?: string | null,"legado_importado_por"?: string | null,"linha_tabela_id"?: string | null,"matricula_id"?: string,"mensalidade_proposta"?: number | null,"numero"?: number,"numero_legado"?: string | null,"origem_id"?: string | null,"parceiro_id"?: string | null,"prazo"?: number,"primeiro_vencimento"?: string | null,"quitados_legado"?: string | null,"situacao"?: Database["public"]['Enums']["situacao_contrato"],"tipo"?: Database["public"]['Enums']["tipo_contrato"],"total_descontos"?: number,"total_dividas_externas"?: number,"total_quitado"?: number,"valor_bruto"?: number,"valor_liquido"?: never,"valor_mensalidade_tabela"?: number | null,"valor_parcela"?: number,"valores_travados_em"?: string | null,"versao"?: number,"vinculo_id"?: string
                   }
                   Relationships: [
                     {
@@ -542,6 +560,12 @@ isOneToOne: false
       columns: ["convenio_id"]
 isOneToOne: false
       referencedRelation: "convenios"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contratos_importacao_id_fkey"
+      columns: ["importacao_id"]
+isOneToOne: false
+      referencedRelation: "importacoes"
       referencedColumns: ["id"]
     },{
       foreignKeyName: "contratos_linha_tabela_id_fkey"
@@ -649,16 +673,30 @@ isOneToOne: false
       referencedColumns: ["chave"]
     }
                   ]
-                },"mensalidade_averbacoes": {
+                },"importacoes": {
                   Row: {
-                    "ade": string,"contrato_origem_id": string | null,"convenio_id": string,"criado_em": string,"criado_por": string | null,"id": string,"matricula_id": string,"mensalidade_id": string | null,"migrada_para": string | null,"situacao": Database["public"]['Enums']["situacao_averbacao"],"valor_averbado": number
+                    "arquivo_caminho": string | null,"arquivo_nome": string,"concluida_em": string | null,"criado_em": string,"data_posicao": string,"desfeita_em": string | null,"desfeita_por": string | null,"erros": Json | null,"hash": string,"id": string,"resumo": Json | null,"situacao": string,"usuario_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "ade": string,"contrato_origem_id"?: string | null,"convenio_id": string,"criado_em"?: string,"criado_por"?: string | null,"id"?: string,"matricula_id": string,"mensalidade_id"?: string | null,"migrada_para"?: string | null,"situacao": Database["public"]['Enums']["situacao_averbacao"],"valor_averbado": number
+                    "arquivo_caminho"?: string | null,"arquivo_nome": string,"concluida_em"?: string | null,"criado_em"?: string,"data_posicao": string,"desfeita_em"?: string | null,"desfeita_por"?: string | null,"erros"?: Json | null,"hash": string,"id"?: string,"resumo"?: Json | null,"situacao"?: string,"usuario_id"?: string | null
                   }
                   Update: {
-                    "ade"?: string,"contrato_origem_id"?: string | null,"convenio_id"?: string,"criado_em"?: string,"criado_por"?: string | null,"id"?: string,"matricula_id"?: string,"mensalidade_id"?: string | null,"migrada_para"?: string | null,"situacao"?: Database["public"]['Enums']["situacao_averbacao"],"valor_averbado"?: number
+                    "arquivo_caminho"?: string | null,"arquivo_nome"?: string,"concluida_em"?: string | null,"criado_em"?: string,"data_posicao"?: string,"desfeita_em"?: string | null,"desfeita_por"?: string | null,"erros"?: Json | null,"hash"?: string,"id"?: string,"resumo"?: Json | null,"situacao"?: string,"usuario_id"?: string | null
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"mensalidade_averbacoes": {
+                  Row: {
+                    "ade": string,"contrato_origem_id": string | null,"convenio_id": string,"criado_em": string,"criado_por": string | null,"id": string,"importacao_id": string | null,"matricula_id": string,"mensalidade_id": string | null,"migrada_para": string | null,"situacao": Database["public"]['Enums']["situacao_averbacao"],"valor_averbado": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "ade": string,"contrato_origem_id"?: string | null,"convenio_id": string,"criado_em"?: string,"criado_por"?: string | null,"id"?: string,"importacao_id"?: string | null,"matricula_id": string,"mensalidade_id"?: string | null,"migrada_para"?: string | null,"situacao": Database["public"]['Enums']["situacao_averbacao"],"valor_averbado": number
+                  }
+                  Update: {
+                    "ade"?: string,"contrato_origem_id"?: string | null,"convenio_id"?: string,"criado_em"?: string,"criado_por"?: string | null,"id"?: string,"importacao_id"?: string | null,"matricula_id"?: string,"mensalidade_id"?: string | null,"migrada_para"?: string | null,"situacao"?: Database["public"]['Enums']["situacao_averbacao"],"valor_averbado"?: number
                   }
                   Relationships: [
                     {
@@ -678,6 +716,12 @@ isOneToOne: false
       columns: ["convenio_id"]
 isOneToOne: false
       referencedRelation: "convenios"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "mensalidade_averbacoes_importacao_id_fkey"
+      columns: ["importacao_id"]
+isOneToOne: false
+      referencedRelation: "importacoes"
       referencedColumns: ["id"]
     },{
       foreignKeyName: "mensalidade_averbacoes_matricula_id_fkey"
@@ -759,17 +803,23 @@ isOneToOne: false
                   ]
                 },"mensalidades": {
                   Row: {
-                    "cancelada_em": string | null,"criado_em": string,"id": string,"matricula_id": string,"motivo_cancelamento": string | null,"requerimento_documento_id": string | null,"situacao": string
+                    "cancelada_em": string | null,"criado_em": string,"id": string,"importacao_id": string | null,"matricula_id": string,"motivo_cancelamento": string | null,"requerimento_documento_id": string | null,"situacao": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "cancelada_em"?: string | null,"criado_em"?: string,"id"?: string,"matricula_id": string,"motivo_cancelamento"?: string | null,"requerimento_documento_id"?: string | null,"situacao"?: string
+                    "cancelada_em"?: string | null,"criado_em"?: string,"id"?: string,"importacao_id"?: string | null,"matricula_id": string,"motivo_cancelamento"?: string | null,"requerimento_documento_id"?: string | null,"situacao"?: string
                   }
                   Update: {
-                    "cancelada_em"?: string | null,"criado_em"?: string,"id"?: string,"matricula_id"?: string,"motivo_cancelamento"?: string | null,"requerimento_documento_id"?: string | null,"situacao"?: string
+                    "cancelada_em"?: string | null,"criado_em"?: string,"id"?: string,"importacao_id"?: string | null,"matricula_id"?: string,"motivo_cancelamento"?: string | null,"requerimento_documento_id"?: string | null,"situacao"?: string
                   }
                   Relationships: [
                     {
+      foreignKeyName: "mensalidades_importacao_id_fkey"
+      columns: ["importacao_id"]
+isOneToOne: false
+      referencedRelation: "importacoes"
+      referencedColumns: ["id"]
+    },{
       foreignKeyName: "mensalidades_matricula_id_fkey"
       columns: ["matricula_id"]
 isOneToOne: false
@@ -1135,6 +1185,7 @@ isOneToOne: false
 "fase_retorno": Database["public"]['Enums']["fase_contrato"] | null,
 "fator": number,
 "id": string,
+"importacao_id": string | null,
 "legado": boolean,
 "legado_importado_em": string | null,
 "legado_importado_por": string | null,
@@ -1142,10 +1193,12 @@ isOneToOne: false
 "matricula_id": string,
 "mensalidade_proposta": number | null,
 "numero": number,
+"numero_legado": string | null,
 "origem_id": string | null,
 "parceiro_id": string | null,
 "prazo": number,
 "primeiro_vencimento": string | null,
+"quitados_legado": string | null,
 "situacao": Database["public"]['Enums']["situacao_contrato"],
 "tipo": Database["public"]['Enums']["tipo_contrato"],
 "total_descontos": number,
@@ -1185,6 +1238,18 @@ isOneToOne: false
                            },
 "_gravar_versao":
 { Args: { "p_contrato_id": string,"p_motivo": string }; Returns: undefined
+                           },
+"_imp_chave":
+{ Args: { "p": string }; Returns: string
+                           },
+"_imp_competencia":
+{ Args: { "p": string,"p_campo": string }; Returns: string
+                           },
+"_imp_data":
+{ Args: { "p": string,"p_campo": string }; Returns: string
+                           },
+"_imp_inteiro":
+{ Args: { "p": string,"p_campo": string }; Returns: number
                            },
 "_linhas_candidatas":
 { Args: { "p_convenio_id": string,"p_data": string,"p_data_nascimento": string,"p_prazo": number,"p_tipo": Database["public"]['Enums']["tipo_contrato"],"p_vinculo_id": string }; Returns: {

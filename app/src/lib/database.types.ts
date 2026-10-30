@@ -281,6 +281,58 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"contrato_assinatura_evidencias": {
+                  Row: {
+                    "assinatura_id": string,"criado_em": string,"dados": NonNullable<Json>
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "assinatura_id": string,"criado_em"?: string,"dados": NonNullable<Json>
+                  }
+                  Update: {
+                    "assinatura_id"?: string,"criado_em"?: string,"dados"?: NonNullable<Json>
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "contrato_assinatura_evidencias_assinatura_id_fkey"
+      columns: ["assinatura_id"]
+isOneToOne: true
+      referencedRelation: "contrato_assinaturas"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"contrato_assinaturas": {
+                  Row: {
+                    "assinado_em": string | null,"assinantes": Json | null,"cancelado_em": string | null,"conferido_em": string | null,"conferido_por": string | null,"contrato_id": string,"criado_em": string,"enviado_em": string | null,"enviado_por": string | null,"erro": string | null,"id": string,"modelo_id": string | null,"pdf_assinado_caminho": string | null,"pdf_caminho": string | null,"prazo": string | null,"situacao": string,"valores": NonNullable<Json>,"zapsign_token": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "assinado_em"?: string | null,"assinantes"?: Json | null,"cancelado_em"?: string | null,"conferido_em"?: string | null,"conferido_por"?: string | null,"contrato_id": string,"criado_em"?: string,"enviado_em"?: string | null,"enviado_por"?: string | null,"erro"?: string | null,"id"?: string,"modelo_id"?: string | null,"pdf_assinado_caminho"?: string | null,"pdf_caminho"?: string | null,"prazo"?: string | null,"situacao": string,"valores": NonNullable<Json>,"zapsign_token"?: string | null
+                  }
+                  Update: {
+                    "assinado_em"?: string | null,"assinantes"?: Json | null,"cancelado_em"?: string | null,"conferido_em"?: string | null,"conferido_por"?: string | null,"contrato_id"?: string,"criado_em"?: string,"enviado_em"?: string | null,"enviado_por"?: string | null,"erro"?: string | null,"id"?: string,"modelo_id"?: string | null,"pdf_assinado_caminho"?: string | null,"pdf_caminho"?: string | null,"prazo"?: string | null,"situacao"?: string,"valores"?: NonNullable<Json>,"zapsign_token"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "contrato_assinaturas_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "contratos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "contrato_assinaturas_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "v_candidatos_prejuizo"
+      referencedColumns: ["contrato_id"]
+    },{
+      foreignKeyName: "contrato_assinaturas_modelo_id_fkey"
+      columns: ["modelo_id"]
+isOneToOne: false
+      referencedRelation: "contrato_modelos"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"contrato_averbacoes": {
                   Row: {
                     "ade": string,"contrato_id": string,"convenio_id": string,"criado_em": string,"criado_por": string | null,"id": string,"importacao_id": string | null,"matricula_id": string,"migrada_para": string | null,"situacao": Database["public"]['Enums']["situacao_averbacao"],"valor_averbado": number
@@ -441,6 +493,26 @@ isOneToOne: false
       referencedColumns: ["contrato_id"]
     }
                   ]
+                },"contrato_modelos": {
+                  Row: {
+                    "ativo": boolean,"convenio_id": string,"criado_em": string,"criado_por": string | null,"id": string,"teste": boolean,"texto": string,"versao": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "ativo"?: boolean,"convenio_id": string,"criado_em"?: string,"criado_por"?: string | null,"id"?: string,"teste"?: boolean,"texto": string,"versao": number
+                  }
+                  Update: {
+                    "ativo"?: boolean,"convenio_id"?: string,"criado_em"?: string,"criado_por"?: string | null,"id"?: string,"teste"?: boolean,"texto"?: string,"versao"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "contrato_modelos_convenio_id_fkey"
+      columns: ["convenio_id"]
+isOneToOne: false
+      referencedRelation: "convenios"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"contrato_quitacoes": {
                   Row: {
                     "contrato_id": string,"contrato_quitado_id": string,"fonte": string,"id": string,"observacao": string | null,"reservado": boolean,"saldo_devedor": number
@@ -599,6 +671,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"convenio_assinantes": {
+                  Row: {
+                    "ativo": boolean,"celular": string | null,"convenio_id": string,"email": string | null,"id": string,"nome": string,"ordem": number,"papel": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "ativo"?: boolean,"celular"?: string | null,"convenio_id": string,"email"?: string | null,"id"?: string,"nome": string,"ordem"?: number,"papel": string
+                  }
+                  Update: {
+                    "ativo"?: boolean,"celular"?: string | null,"convenio_id"?: string,"email"?: string | null,"id"?: string,"nome"?: string,"ordem"?: number,"papel"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "convenio_assinantes_convenio_id_fkey"
+      columns: ["convenio_id"]
+isOneToOne: false
+      referencedRelation: "convenios"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"convenio_tipos_desconto": {
                   Row: {
                     "ativo": boolean,"convenio_id": string,"forma": string,"id": string,"nome": string,"valor_padrao": number | null
@@ -641,14 +733,14 @@ isOneToOne: false
                   ]
                 },"convenios": {
                   Row: {
-                    "ade_descricao": string | null,"ade_modo": string,"ade_regex": string | null,"ativo": boolean,"averbadora": string | null,"campos_obrigatorios": (string)[],"criado_em": string,"dia_corte": number | null,"dia_vencimento": number | null,"dias_prejuizo": number,"ente": string | null,"id": string,"layout_remessa": Json | null,"layout_retorno": Json | null,"margem_percentual": number | null,"modelo_contrato": string | null,"nome": string,"prazo_max": number | null,"prazo_min": number | null,"uf": string | null
+                    "ade_descricao": string | null,"ade_modo": string,"ade_regex": string | null,"assinatura_codigo": boolean,"assinatura_documento": boolean,"assinatura_email": boolean,"assinatura_prazo_dias": number,"assinatura_selfie": boolean,"assinatura_whatsapp": boolean,"ativo": boolean,"averbadora": string | null,"campos_obrigatorios": (string)[],"criado_em": string,"dia_corte": number | null,"dia_vencimento": number | null,"dias_prejuizo": number,"ente": string | null,"id": string,"layout_remessa": Json | null,"layout_retorno": Json | null,"margem_percentual": number | null,"nome": string,"prazo_max": number | null,"prazo_min": number | null,"uf": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "ade_descricao"?: string | null,"ade_modo"?: string,"ade_regex"?: string | null,"ativo"?: boolean,"averbadora"?: string | null,"campos_obrigatorios"?: (string)[],"criado_em"?: string,"dia_corte"?: number | null,"dia_vencimento"?: number | null,"dias_prejuizo"?: number,"ente"?: string | null,"id"?: string,"layout_remessa"?: Json | null,"layout_retorno"?: Json | null,"margem_percentual"?: number | null,"modelo_contrato"?: string | null,"nome": string,"prazo_max"?: number | null,"prazo_min"?: number | null,"uf"?: string | null
+                    "ade_descricao"?: string | null,"ade_modo"?: string,"ade_regex"?: string | null,"assinatura_codigo"?: boolean,"assinatura_documento"?: boolean,"assinatura_email"?: boolean,"assinatura_prazo_dias"?: number,"assinatura_selfie"?: boolean,"assinatura_whatsapp"?: boolean,"ativo"?: boolean,"averbadora"?: string | null,"campos_obrigatorios"?: (string)[],"criado_em"?: string,"dia_corte"?: number | null,"dia_vencimento"?: number | null,"dias_prejuizo"?: number,"ente"?: string | null,"id"?: string,"layout_remessa"?: Json | null,"layout_retorno"?: Json | null,"margem_percentual"?: number | null,"nome": string,"prazo_max"?: number | null,"prazo_min"?: number | null,"uf"?: string | null
                   }
                   Update: {
-                    "ade_descricao"?: string | null,"ade_modo"?: string,"ade_regex"?: string | null,"ativo"?: boolean,"averbadora"?: string | null,"campos_obrigatorios"?: (string)[],"criado_em"?: string,"dia_corte"?: number | null,"dia_vencimento"?: number | null,"dias_prejuizo"?: number,"ente"?: string | null,"id"?: string,"layout_remessa"?: Json | null,"layout_retorno"?: Json | null,"margem_percentual"?: number | null,"modelo_contrato"?: string | null,"nome"?: string,"prazo_max"?: number | null,"prazo_min"?: number | null,"uf"?: string | null
+                    "ade_descricao"?: string | null,"ade_modo"?: string,"ade_regex"?: string | null,"assinatura_codigo"?: boolean,"assinatura_documento"?: boolean,"assinatura_email"?: boolean,"assinatura_prazo_dias"?: number,"assinatura_selfie"?: boolean,"assinatura_whatsapp"?: boolean,"ativo"?: boolean,"averbadora"?: string | null,"campos_obrigatorios"?: (string)[],"criado_em"?: string,"dia_corte"?: number | null,"dia_vencimento"?: number | null,"dias_prejuizo"?: number,"ente"?: string | null,"id"?: string,"layout_remessa"?: Json | null,"layout_retorno"?: Json | null,"margem_percentual"?: number | null,"nome"?: string,"prazo_max"?: number | null,"prazo_min"?: number | null,"uf"?: string | null
                   }
                   Relationships: [
                     
@@ -1319,6 +1411,9 @@ isOneToOne: false
 "_mensalidade_na_liberacao":
 { Args: { "k": Omit<Database["public"]['Tables']["contratos"]['Row'], Database["public"]['Tables']["contratos"]['ComputedFields']>,"p_competencia": string }; Returns: undefined
                            },
+"_modelo_validar":
+{ Args: { "p_texto": string }; Returns: undefined
+                           },
 "_pedir_cancelamento_averbacoes":
 { Args: { "p_contrato_id": string,"p_motivo": string }; Returns: undefined
                            },
@@ -1452,6 +1547,11 @@ isOneToOne: false
 "migrar_matricula":
 { Args: { "p_confirmacao": string,"p_contrato_id": string,"p_nova_matricula_id": string,"p_novo_ade": string,"p_valor_averbado": number }; Returns: undefined
                            },
+"modelo_campos":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "chave": string,"exemplo": string,"rotulo": string
+            }[]
+                           },
 "mover_contrato":
 { Args: { "p_id": string,"p_motivo"?: string,"p_para": Database["public"]['Enums']["fase_contrato"] }; Returns: undefined
                            },
@@ -1506,6 +1606,9 @@ isOneToOne: false
                            },
 "resolver_pendencia":
 { Args: { "p_id": string }; Returns: undefined
+                           },
+"salvar_modelo_contrato":
+{ Args: { "p_convenio_id": string,"p_teste": boolean,"p_texto": string }; Returns: number
                            },
 "simular_por_parcela":
 { Args: { "p_convenio_id": string,"p_data"?: string,"p_data_nascimento"?: string,"p_gravar"?: boolean,"p_parcela": number,"p_prazo": number,"p_tipo": Database["public"]['Enums']["tipo_contrato"],"p_vinculo_id": string }; Returns: {

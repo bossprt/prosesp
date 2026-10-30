@@ -106,7 +106,6 @@ function ConvenioDetalhe({
       nome: f.nome, uf: f.uf, ente: f.ente, ativo: f.ativo, averbadora: f.averbadora,
       ade_regex: f.ade_regex, ade_descricao: f.ade_descricao, ade_modo: f.ade_modo,
       margem_percentual: f.margem_percentual, campos_obrigatorios: f.campos_obrigatorios,
-      modelo_contrato: f.modelo_contrato,
     };
     for (const k of NUMEROS) {
       const v = f[k] as unknown;
@@ -143,7 +142,6 @@ function ConvenioDetalhe({
         <Campo rotulo="Dias para sugerir prejuízo" inputMode="numeric" {...texto('dias_prejuizo')} />
         <Campo rotulo="Prazo mínimo (meses)" inputMode="numeric" {...texto('prazo_min')} />
         <Campo rotulo="Prazo máximo (meses)" inputMode="numeric" {...texto('prazo_max')} />
-        <Campo rotulo="Modelo do contrato (referência)" {...texto('modelo_contrato')} />
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={f.ativo} disabled={!podeEditar} onChange={(e) => setF({ ...f, ativo: e.target.checked })} />
           Convênio ativo

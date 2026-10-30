@@ -1401,6 +1401,9 @@ isOneToOne: false
 "desativar_usuario":
 { Args: { "p_id": string }; Returns: undefined
                            },
+"desfazer_importacao":
+{ Args: { "p_id": string }; Returns: undefined
+                           },
 "devolver_pre_digitacao":
 { Args: { "p_id": string,"p_motivo": string }; Returns: undefined
                            },

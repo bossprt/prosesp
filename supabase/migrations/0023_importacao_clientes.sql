@@ -332,7 +332,7 @@ language plpgsql security definer set search_path = '' as $$
 begin
   perform public._imp_minha_em_andamento(p_importacao_id);
   update public.importacoes
-  set resumo = p_resumo, erros = coalesce(p_erros, '[]'), situacao = 'gravada', concluida_em = now()
+  set resumo = p_resumo, erros = coalesce(p_erros, '[]'), situacao = 'gravada', concluida_em = clock_timestamp()
   where id = p_importacao_id;
 end $$;
 

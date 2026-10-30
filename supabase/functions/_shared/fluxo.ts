@@ -7,6 +7,7 @@ import type { AssinanteZapSign, ClienteZapSign } from './zapsign.ts';
 export class ErroUsuario extends Error {}
 
 export const MSG_ENVIO = 'Não foi possível enviar para a ZapSign. Tente de novo em alguns minutos.';
+export const MSG_MODELO_TESTE = 'O modelo deste convênio é de teste e não pode ser usado em produção.';
 export const MSG_REENVIO = 'Não foi possível reenviar pela ZapSign. Tente de novo em alguns minutos.';
 
 export interface Dependencias {
@@ -18,6 +19,8 @@ export interface Dependencias {
   envioPorToken(zapsignToken: string): Promise<{ id: string; contrato_id: string; situacao: string } | null>;
   cancelamentosPendentes(): Promise<{ id: string; zapsign_token: string }[]>;
   zapsign: ClienteZapSign;
+  /** true quando a chave é do sandbox da ZapSign (modelo de teste só vai para lá). */
+  zapsignSandbox: boolean;
 }
 
 interface Assinante {
@@ -86,6 +89,7 @@ export function criarFluxo(d: Dependencias) {
       const p: Preparado = await d.rpcUsuario('assinatura_preparar', { p_contrato_id: contratoId });
       let docToken: string | null = null;
       try {
+        if (p.modelo.teste && !d.zapsignSandbox) throw new ErroUsuario(MSG_MODELO_TESTE);
         const pdf = await gerarPdf(renderizarModelo(p.modelo.texto, p.dados), {
           teste: p.modelo.teste, titulo: `Contrato ${p.contrato_numero}`,
         });
@@ -102,9 +106,12 @@ export function criarFluxo(d: Dependencias) {
           p_id: p.assinatura_id, p_pdf_caminho: caminho, p_zapsign_token: doc.token, p_assinantes: assinantes,
         });
       } catch (e) {
-        if (docToken) await d.zapsign.cancelar(docToken).catch(() => {});
-        await d.rpcServico('_assinatura_falhou', { p_id: p.assinatura_id, p_erro: String(e) }).catch(() => {});
-        throw new ErroUsuario(MSG_ENVIO);
+        // Documento criado e não apagado: o token fica guardado para a lista "Cancelar na ZapSign".
+        const orfao = docToken ? await d.zapsign.cancelar(docToken).then(() => null, () => docToken) : null;
+        await d.rpcServico('_assinatura_falhou', {
+          p_id: p.assinatura_id, p_erro: String(e), ...(orfao ? { p_zapsign_token: orfao } : {}),
+        }).catch(() => {});
+        throw e instanceof ErroUsuario ? e : new ErroUsuario(MSG_ENVIO);
       }
     },
 
@@ -130,10 +137,12 @@ export function criarFluxo(d: Dependencias) {
 
     async receberAviso(docToken: string): Promise<void> {
       const envio = await d.envioPorToken(docToken);
-      if (!envio || envio.situacao !== 'enviado') return;
+      if (!envio || !['enviado', 'vencido'].includes(envio.situacao)) return;
       const doc = await d.zapsign.consultar(docToken);
       if (!doc) return;
       const pasta = `${envio.contrato_id}/${envio.id}`;
+      // Assinado sem arquivo pronto: erro faz a ZapSign mandar o aviso de novo.
+      if (doc.status === 'signed' && !doc.signed_file) throw new Error('Documento assinado ainda sem arquivo.');
       if (doc.status === 'signed' && doc.signed_file) {
         const caminho = `${pasta}/assinado.pdf`;
         await d.upload(caminho, await d.zapsign.baixar(doc.signed_file), 'application/pdf');

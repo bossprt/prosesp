@@ -16,6 +16,10 @@ export function resposta(status: number, corpo: Record<string, unknown>) {
   return new Response(JSON.stringify(corpo), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
 }
 
+function zapsignUrl(): string {
+  return Deno.env.get('ZAPSIGN_URL') || ZAPSIGN_SANDBOX;
+}
+
 export function zapsignConfigurada(): boolean {
   return Boolean(Deno.env.get('ZAPSIGN_API_TOKEN'));
 }
@@ -62,8 +66,10 @@ export function dependencias(authorization: string | null): Dependencias {
       return data ?? [];
     },
     zapsign: criarClienteZapSign({
-      url: Deno.env.get('ZAPSIGN_URL') || ZAPSIGN_SANDBOX,
+      url: zapsignUrl(),
       token: Deno.env.get('ZAPSIGN_API_TOKEN') ?? '',
     }),
+    // Só a API de produção conta como produção (sandbox e ZapSign falsa local aceitam modelo de teste).
+    zapsignSandbox: !zapsignUrl().startsWith('https://api.zapsign.com.br'),
   };
 }

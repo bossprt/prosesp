@@ -46,6 +46,7 @@ function deps(): Dependencias {
     envioPorToken: async (t) => envioPorToken[t] ?? null,
     cancelamentosPendentes: async () => cancelamentos,
     zapsign: criarClienteZapSign({ url: z.url, token: 'chave-teste' }),
+    zapsignSandbox: true,
   };
 }
 
@@ -85,6 +86,46 @@ describe('fluxo da assinatura', () => {
     await fetch(`${z.url}/_falhar`, { method: 'POST' });
     await expect(criarFluxo(deps()).enviar('k-1')).rejects.toThrow('Não foi possível enviar para a ZapSign. Tente de novo em alguns minutos.');
     expect(rpcs.map((r) => r.nome)).toEqual(['assinatura_preparar', '_assinatura_falhou']);
+  });
+
+  it('registro falhou e a ZapSign não apagou o documento: guarda o token para cancelar depois', async () => {
+    const d = deps();
+    const servico = d.rpcServico;
+    d.rpcServico = async (nome, args) => {
+      if (nome === '_assinatura_registrar_envio') {
+        await fetch(`${z.url}/_falhar`, { method: 'POST' });
+        throw new Error('banco fora');
+      }
+      return servico(nome, args);
+    };
+    await expect(criarFluxo(d).enviar('k-1')).rejects.toThrow(ErroUsuario);
+    const falhou = rpcs.find((r) => r.nome === '_assinatura_falhou')!;
+    expect(falhou.args).toMatchObject({ p_id: 'ass-1', p_zapsign_token: 'doc-falso-1' });
+  });
+
+  it('modelo de teste não vai para a ZapSign de produção', async () => {
+    const d = deps();
+    d.zapsignSandbox = false;
+    await expect(criarFluxo(d).enviar('k-1')).rejects.toThrow('O modelo deste convênio é de teste e não pode ser usado em produção.');
+    expect(z.chamadas.filter((c) => !c.caminho.startsWith('/_'))).toHaveLength(0);
+    expect(rpcs.map((r) => r.nome)).toEqual(['assinatura_preparar', '_assinatura_falhou']);
+  });
+
+  it('aviso atrasado de envio já vencido ainda registra a assinatura', async () => {
+    await criarFluxo(deps()).enviar('k-1');
+    envioPorToken['doc-falso-1'] = { id: 'ass-1', contrato_id: 'k-1', situacao: 'vencido' };
+    await fetch(`${z.url}/_assinar/doc-falso-1`, { method: 'POST' });
+    rpcs = [];
+    await criarFluxo(deps()).receberAviso('doc-falso-1');
+    expect(rpcs[0]).toMatchObject({ nome: '_assinatura_atualizar', args: { p_situacao: 'assinado' } });
+  });
+
+  it('assinado sem arquivo pronto: dá erro para a ZapSign avisar de novo', async () => {
+    const d = deps();
+    envioPorToken['doc-x'] = { id: 'ass-1', contrato_id: 'k-1', situacao: 'enviado' };
+    d.zapsign = { ...d.zapsign, consultar: async () => ({ token: 'doc-x', status: 'signed', signed_file: null, signers: [] }) as any };
+    await expect(criarFluxo(d).receberAviso('doc-x')).rejects.toThrow();
+    expect(rpcs).toHaveLength(0);
   });
 
   it('erro de regra do banco passa adiante sem marcar falha', async () => {

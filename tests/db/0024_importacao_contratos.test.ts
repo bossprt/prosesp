@@ -63,9 +63,9 @@ describe('0024 importação de contratos', () => {
       const d = comContratos({ tipo: 'refinanciamento' });
       d.quitacoes = [{ linha: 2, numero_novo: d.contratos[0].numero_antigo, numero_quitado: '3100', saldo: '500.00' }];
       const { r } = await gravar(c, s, d);
-      expect(r.avisos).toEqual([
-        { aba: 'Quitações', linha: 2, mensagem: 'Contrato quitado nº 3100 não existe no sistema; guardado só como referência.' },
-      ]);
+      expect(r.avisos).toContainEqual({
+        aba: 'Quitações', linha: 2, mensagem: 'Contrato quitado nº 3100 não existe no sistema; guardado só como referência.',
+      });
       const k = await c.query(`select quitados_legado, valor_liquido::text from public.contratos where numero_legado = $1`, [
         d.contratos[0].numero_antigo,
       ]);

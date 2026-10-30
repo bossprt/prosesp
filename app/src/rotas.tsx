@@ -10,6 +10,7 @@ import { PendenciasAverbadoraPage } from './features/pendencias/PendenciasAverba
 import { CandidatosPrejuizoPage } from './features/prejuizo/CandidatosPrejuizoPage';
 import { ConveniosPage } from './features/convenios/ConveniosPage';
 import { EsteiraPage } from './features/esteira/EsteiraPage';
+import { ImportacaoPage } from './features/importacao/ImportacaoPage';
 import { ParceiroClientePage, ParceiroClientesPage } from './features/parceiro/ParceiroClientesPage';
 import { ParceirosPage } from './features/parceiros/ParceirosPage';
 import { SimuladorPage } from './features/simulador/SimuladorPage';
@@ -40,4 +41,5 @@ export const rotasProtegidas: { path: string; element: ReactElement }[] = [
   { path: '/usuarios', element: <UsuariosPage /> },
   { path: '/permissoes', element: <PermissoesPage /> },
   { path: '/auditoria', element: <AuditoriaPage /> },
+  { path: '/importacao', element: <ImportacaoPage /> },
 ];

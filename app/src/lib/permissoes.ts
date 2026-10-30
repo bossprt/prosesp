@@ -27,6 +27,7 @@ const MENU: ItemMenu[] = [
   { rota: '/usuarios', rotulo: 'Usuários', permissao: 'usuarios.gerenciar', publico: 'equipe' },
   { rota: '/permissoes', rotulo: 'Permissões', permissao: 'permissoes.gerenciar', publico: 'equipe' },
   { rota: '/auditoria', rotulo: 'Auditoria', permissao: 'auditoria.ver', publico: 'equipe' },
+  { rota: '/importacao', rotulo: 'Importar dados antigos', permissao: 'importacao.executar', publico: 'equipe' },
 ];
 
 export function itensMenu(pode: (chave: string) => boolean, ehParceiro: boolean): ItemMenu[] {

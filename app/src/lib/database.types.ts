@@ -1255,6 +1255,15 @@ isOneToOne: false
 "_apos_nova_averbacao":
 { Args: { "p_antiga": string,"p_contrato_id": string,"p_nova": string }; Returns: undefined
                            },
+"_assinatura_atualizar":
+{ Args: { "p_evidencias": Json,"p_pdf_assinado_caminho": string,"p_situacao": string,"p_zapsign_token": string }; Returns: string
+                           },
+"_assinatura_falhou":
+{ Args: { "p_erro": string,"p_id": string }; Returns: undefined
+                           },
+"_assinatura_registrar_envio":
+{ Args: { "p_assinantes": Json,"p_id": string,"p_pdf_caminho": string,"p_zapsign_token": string }; Returns: undefined
+                           },
 "_calcular_contrato":
 { Args: { "p_dados": Json,"p_gravar": boolean }; Returns: Json
                            },
@@ -1324,6 +1333,21 @@ isOneToOne: false
                            },
 "_exigir_parceiro":
 { Args: { "p_permissao": string }; Returns: string
+                           },
+"_fmt_celular":
+{ Args: { "p": string }; Returns: string
+                           },
+"_fmt_cpf":
+{ Args: { "p": string }; Returns: string
+                           },
+"_fmt_data":
+{ Args: { "p": string }; Returns: string
+                           },
+"_fmt_data_extenso":
+{ Args: { "p": string }; Returns: string
+                           },
+"_fmt_dinheiro":
+{ Args: { "p": number }; Returns: string
                            },
 "_gravar_comissao":
 { Args: { "p_calc": Json,"p_contrato_id": string }; Returns: undefined
@@ -1455,6 +1479,12 @@ isOneToOne: false
 "aprovar_pre_digitacao":
 { Args: { "p_id": string }; Returns: Json
                            },
+"assinatura_preparar":
+{ Args: { "p_contrato_id": string }; Returns: Json
+                           },
+"assinaturas_vencer":
+{ Args: { "p_hoje": string }; Returns: number
+                           },
 "cadastrar_cliente":
 { Args: { "p_dados": Json }; Returns: string
                            },
@@ -1477,6 +1507,9 @@ isOneToOne: false
                            },
 "confirmar_aprovacao":
 { Args: { "p_id": string }; Returns: undefined
+                           },
+"contrato_dados_documento":
+{ Args: { "p_contrato_id": string,"p_data"?: string }; Returns: Json
                            },
 "contrato_visivel":
 { Args: { "p_contrato_id": string }; Returns: boolean

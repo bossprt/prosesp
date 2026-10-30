@@ -112,3 +112,48 @@ begin
   end if;
   raise exception 'O histórico do contrato não pode ser alterado.';
 end $$;
+
+-- Índices nas chaves estrangeiras que o desfazer percorre em cascata (sem eles, cada linha apagada varre a tabela)
+create index if not exists parcela_pagamentos_parcela on public.parcela_pagamentos (parcela_id);
+create index if not exists parcela_pagamentos_averbacao on public.parcela_pagamentos (averbacao_id);
+create index if not exists parcelas_averbacao on public.parcelas (averbacao_id);
+create index if not exists contrato_quitacoes_contrato on public.contrato_quitacoes (contrato_id);
+create index if not exists contrato_quitacoes_quitado on public.contrato_quitacoes (contrato_quitado_id);
+create index if not exists contrato_descontos_contrato on public.contrato_descontos (contrato_id);
+create index if not exists contrato_dividas_contrato on public.contrato_dividas_externas (contrato_id);
+create index if not exists contrato_eventos_contrato on public.contrato_eventos (contrato_id);
+create index if not exists contrato_averbacoes_contrato on public.contrato_averbacoes (contrato_id);
+create index if not exists contrato_versoes_contrato on public.contrato_versoes (contrato_id);
+create index if not exists pendencias_contrato on public.pendencias_averbadora (contrato_id);
+create index if not exists pendencias_averbacao on public.pendencias_averbadora (averbacao_id);
+create index if not exists pendencias_mens_averbacao on public.pendencias_averbadora (mensalidade_averbacao_id);
+create index if not exists mensalidade_averbacoes_origem on public.mensalidade_averbacoes (contrato_origem_id);
+create index if not exists mensalidade_averbacoes_mensalidade on public.mensalidade_averbacoes (mensalidade_id);
+create index if not exists mensalidade_valores_averbacao on public.mensalidade_valores (averbacao_id);
+create index if not exists cliente_historico_cliente on public.cliente_historico (cliente_id);
+
+-- A marca de importação só é posta pelas funções do sistema (base segura do desfazer)
+create function public.trg_importacao_id_protegido() returns trigger
+language plpgsql set search_path = '' as $$
+begin
+  if current_user in ('authenticated', 'anon')
+     and ((tg_op = 'INSERT' and new.importacao_id is not null)
+          or (tg_op = 'UPDATE' and new.importacao_id is distinct from old.importacao_id)) then
+    raise exception 'A marca de importação só é definida pelo próprio sistema.';
+  end if;
+  return new;
+end $$;
+create trigger trg_importacao_id_protegido before insert or update on public.clientes
+  for each row execute function public.trg_importacao_id_protegido();
+create trigger trg_importacao_id_protegido before insert or update on public.cliente_matriculas
+  for each row execute function public.trg_importacao_id_protegido();
+create trigger trg_importacao_id_protegido before insert or update on public.contratos
+  for each row execute function public.trg_importacao_id_protegido();
+create trigger trg_importacao_id_protegido before insert or update on public.mensalidades
+  for each row execute function public.trg_importacao_id_protegido();
+create trigger trg_importacao_id_protegido before insert or update on public.mensalidade_averbacoes
+  for each row execute function public.trg_importacao_id_protegido();
+create trigger trg_importacao_id_protegido before insert or update on public.contrato_averbacoes
+  for each row execute function public.trg_importacao_id_protegido();
+
+alter table public.importacoes add column ultimo_lote_em timestamptz;

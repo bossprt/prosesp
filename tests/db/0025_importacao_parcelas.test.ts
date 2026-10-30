@@ -75,7 +75,7 @@ describe('0025 parcelas importadas', () => {
       ];
       const { r } = await gravar(c, s, d);
       expect(r.resumo.Parcelas).toEqual({ novas: 3, existentes: 0, erros: 0 });
-      expect((await parcelas(c, num)).map((x) => [x.status, x.pag])).toEqual([['paga', 1], ['atrasada', 0], ['aberta', 0]]);
+      expect((await parcelas(c, num)).map((x) => [x.status, x.pag])).toEqual([['paga', 1], ['atrasada', 0], ['atrasada', 0]]);
       expect(await situacao(c, num)).toBe('em_atraso');
     });
   });

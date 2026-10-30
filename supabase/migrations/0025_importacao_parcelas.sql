@@ -55,6 +55,11 @@ begin
           if v_status not in ('paga', 'aberta', 'atrasada', 'cancelada') then
             raise exception 'Situação da parcela inválida: %.', coalesce(nullif(btrim(r->>'situacao'), ''), '(vazia)');
           end if;
+          -- aberta e já vencida na data da posição: atrasada (mesma regra das parcelas geradas)
+          if v_status = 'aberta'
+             and make_date(extract(year from v_comp)::int, extract(month from v_comp)::int, v_dia) < v_posicao then
+            v_status := 'atrasada';
+          end if;
           begin
             insert into public.parcelas (contrato_id, numero, competencia, vencimento, valor, status, averbacao_id)
             values (k.id, v_num, v_comp,
@@ -109,6 +114,13 @@ begin
                  case v_nova when 'em_atraso' then 'em atraso' else 'ativo' end));
       end if;
     end if;
+  end loop;
+
+  -- parcelas de contrato que já estava gravado e não veio na aba Contratos deste arquivo
+  for r in select p from jsonb_array_elements(g->'parcelas') p
+           where not exists (select 1 from jsonb_array_elements(g->'contratos') y
+                             where btrim(y->>'numero_antigo') = btrim(p->>'numero_antigo')) loop
+    v_saida := v_saida || public._imp_item('Parcelas', (r->>'linha')::int, 'existente', null);
   end loop;
   return v_saida;
 end $$;

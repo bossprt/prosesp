@@ -45,6 +45,9 @@ describe('conversões', () => {
     expect(paraDinheiro(1234.5)).toBe('1234.50');
     expect(paraDinheiro('122.40')).toBe('122.40');
     expect(paraDinheiro('dez reais')).toBe('dez reais');
+    expect(paraDinheiro('1.234')).toBe('1234.00');
+    expect(paraDinheiro('R$ 1.500')).toBe('1500.00');
+    expect(paraDinheiro('12.345.678')).toBe('12345678.00');
   });
 
   it('chaveTexto ignora acento, maiúscula, asterisco e espaços', () => {
@@ -137,6 +140,20 @@ describe('conferência do arquivo e lotes', () => {
     expect(lotes[1].parcelas.map((p) => p.numero_antigo)).toEqual(lotes[1].contratos.map((k) => k.numero_antigo));
     expect(lotes[2].parcelas.at(-1)?.numero_antigo).toBe('SEM-CONTRATO');
     expect(lotes.every((l) => l.posicao === '2026-10-01')).toBe(true);
+  });
+
+  it('dividirEmLotes também corta por número de linhas', () => {
+    const d = vazio();
+    for (let i = 0; i < 10; i++) {
+      const cpf = String(20000000000 + i);
+      d.clientes.push(L(i + 2, { cpf }));
+      d.contratos.push(L(i + 2, { numero_antigo: `P${i}`, cpf }));
+      for (let n = 0; n < 1000; n++) d.parcelas.push(L(d.parcelas.length + 2, { numero_antigo: `P${i}` }));
+    }
+    const lotes = dividirEmLotes(d);
+    expect(lotes.length).toBe(5);
+    expect(lotes.every((l) => l.parcelas.length + l.clientes.length + l.contratos.length <= 3000)).toBe(true);
+    expect(lotes.flatMap((l) => l.clientes).length).toBe(10);
   });
 
   it('planilhaDeErros contém só as linhas com erro e a coluna Erro', async () => {

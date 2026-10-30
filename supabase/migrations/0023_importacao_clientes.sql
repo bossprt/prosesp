@@ -3,7 +3,10 @@
 -- ── Auxiliares ────────────────────────────────────────────────
 create function public._imp_cpf(p text) returns text
 language sql immutable set search_path = '' as $$
-  select case when public.so_digitos(p) = '' then null else public.normalizar_cpf(p) end
+  -- mais de 11 dígitos não é cortado (o lpad cortaria e poderia achar outro cliente): fica inválido
+  select case when public.so_digitos(p) = '' then null
+              when length(public.so_digitos(p)) > 11 then public.so_digitos(p)
+              else public.normalizar_cpf(p) end
 $$;
 
 create function public._imp_item(p_aba text, p_linha integer, p_tipo text, p_mensagem text) returns jsonb
@@ -208,11 +211,16 @@ begin
     from jsonb_array_elements(coalesce(p_dados->k, '[]')) x;
   end loop;
   -- linhas ligadas a um contrato: CPF do contrato no lote, senão do contrato já gravado
+  create temp table if not exists _imp_mapa (numero text primary key, cpf text) on commit drop;
+  truncate pg_temp._imp_mapa;
+  insert into pg_temp._imp_mapa
+  select distinct on (btrim(dados->>'numero_antigo')) btrim(dados->>'numero_antigo'), cpf
+  from pg_temp._imp_linhas where aba = 'contratos' and nullif(btrim(dados->>'numero_antigo'), '') is not null
+  order by btrim(dados->>'numero_antigo'), linha;
   foreach k in array array['quitacoes', 'dividas', 'parcelas'] loop
     insert into pg_temp._imp_linhas
     select k, (x->>'linha')::int,
-           coalesce((select l.cpf from pg_temp._imp_linhas l
-                     where l.aba = 'contratos' and btrim(l.dados->>'numero_antigo') = btrim(x->>num) limit 1),
+           coalesce((select m.cpf from pg_temp._imp_mapa m where m.numero = btrim(x->>num)),
                     (select c.cpf from public.contratos ct join public.clientes c on c.id = ct.cliente_id
                      where ct.numero_legado = btrim(x->>num))),
            x
@@ -321,10 +329,14 @@ end $$;
 
 create function public.importacao_gravar_lote(p_importacao_id uuid, p_dados jsonb) returns jsonb
 language plpgsql security definer set search_path = '' as $$
+declare
+  v jsonb;
 begin
   perform public._imp_minha_em_andamento(p_importacao_id);
   perform pg_advisory_xact_lock(hashtext('importacao'));
-  return public._imp_processar(p_dados, p_importacao_id);
+  v := public._imp_processar(p_dados, p_importacao_id);
+  update public.importacoes set ultimo_lote_em = clock_timestamp() where id = p_importacao_id;
+  return v;
 end $$;
 
 create function public.importacao_concluir(p_importacao_id uuid, p_resumo jsonb, p_erros jsonb) returns void

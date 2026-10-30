@@ -60,6 +60,8 @@ export function paraDinheiro(v: unknown): string | null {
   const s = String(v).replace(/R\$/i, '').replace(/\s/g, '');
   let n: string | null = null;
   if (/^-?\d{1,3}(\.\d{3})*,\d+$|^-?\d+,\d+$/.test(s)) n = s.replace(/\./g, '').replace(',', '.');
+  // "1.234" é mil e duzentos e trinta e quatro (ponto de milhar), não 1,234
+  else if (/^-?\d{1,3}(\.\d{3})+$/.test(s)) n = s.replace(/\./g, '');
   else if (/^-?\d+(\.\d+)?$/.test(s)) n = s;
   return n === null ? String(v).trim() : Number(n).toFixed(2);
 }
@@ -221,8 +223,11 @@ export function separarComErro(d: DadosImportacao, erros: ErroLinha[]): { limpos
   return { limpos, erros: saida };
 }
 
-/** Lotes de até maxCpfs CPFs; linhas sem CPF conhecido vão no último lote (o banco explica o erro). */
-export function dividirEmLotes(d: DadosImportacao, maxCpfs = 300): DadosImportacao[] {
+/**
+ * Lotes de até maxCpfs CPFs e até maxLinhas linhas (o que vier primeiro), para cada chamada caber no tempo limite
+ * do banco; um CPF nunca é dividido. Linhas sem CPF conhecido vão no último lote (o banco explica o erro).
+ */
+export function dividirEmLotes(d: DadosImportacao, maxCpfs = 300, maxLinhas = 3000): DadosImportacao[] {
   const cpf = cpfPorLinha(d);
   const ordem: string[] = [];
   const grupos = new Map<string, Record<AbaChave, LinhaImp[]>>();
@@ -243,11 +248,23 @@ export function dividirEmLotes(d: DadosImportacao, maxCpfs = 300): DadosImportac
   }
   const novo = () => ({ posicao: d.posicao, ...Object.fromEntries(CHAVES.map((a) => [a, [] as LinhaImp[]])) }) as DadosImportacao;
   const lotes: DadosImportacao[] = [];
-  for (let i = 0; i < ordem.length; i += maxCpfs) {
-    const lote = novo();
-    for (const k of ordem.slice(i, i + maxCpfs)) for (const a of CHAVES) lote[a].push(...grupos.get(k)![a]);
-    lotes.push(lote);
+  let lote = novo();
+  let cpfs = 0;
+  let linhas = 0;
+  for (const k of ordem) {
+    const g = grupos.get(k)!;
+    const tamanho = CHAVES.reduce((t, a) => t + g[a].length, 0);
+    if (cpfs > 0 && (cpfs + 1 > maxCpfs || linhas + tamanho > maxLinhas)) {
+      lotes.push(lote);
+      lote = novo();
+      cpfs = 0;
+      linhas = 0;
+    }
+    for (const a of CHAVES) lote[a].push(...g[a]);
+    cpfs += 1;
+    linhas += tamanho;
   }
+  if (cpfs > 0) lotes.push(lote);
   if (CHAVES.some((a) => soltas[a].length)) {
     if (!lotes.length) lotes.push(novo());
     for (const a of CHAVES) lotes[lotes.length - 1][a].push(...soltas[a]);

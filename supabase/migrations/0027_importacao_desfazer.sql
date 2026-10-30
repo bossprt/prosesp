@@ -4,14 +4,22 @@ create function public.desfazer_importacao(p_id uuid) returns void
 language plpgsql security definer set search_path = '' as $$
 declare
   imp public.importacoes;
+  v_corte timestamptz;
   v text;
 begin
   perform public.app_exigir('importacao.executar');
   select * into imp from public.importacoes where id = p_id for update;
-  if imp.id is null or imp.situacao <> 'gravada' then
+  -- em andamento: gravação interrompida no meio (conexão caiu, aba fechada); também pode ser desfeita
+  if imp.id is null or imp.situacao not in ('gravada', 'em_andamento') then
     raise exception 'Esta importação não pode ser desfeita.';
   end if;
   perform pg_advisory_xact_lock(hashtext('importacao'));
+  v_corte := coalesce(imp.concluida_em, imp.ultimo_lote_em, imp.criado_em);
+  -- trava o que vai ser apagado: uma edição concorrente espera e não se perde em silêncio
+  perform 1 from public.clientes where importacao_id = p_id for update;
+  perform 1 from public.cliente_matriculas where importacao_id = p_id for update;
+  perform 1 from public.contratos where importacao_id = p_id for update;
+  perform 1 from public.mensalidades where importacao_id = p_id for update;
 
   -- contratos: edição, evento feito depois, pagamento fora do legado, averbação/pendência nova, quitação por contrato de fora
   select k.numero_legado into v from public.contratos k
@@ -21,7 +29,9 @@ begin
     or exists (select 1 from public.parcelas p join public.parcela_pagamentos g on g.parcela_id = p.id
                where p.contrato_id = k.id and g.origem <> 'legado')
     or exists (select 1 from public.contrato_averbacoes a where a.contrato_id = k.id and a.importacao_id is distinct from p_id)
-    or exists (select 1 from public.pendencias_averbadora x where x.contrato_id = k.id)
+    or exists (select 1 from public.pendencias_averbadora x
+               where x.contrato_id = k.id
+                  or x.averbacao_id in (select a.id from public.contrato_averbacoes a where a.contrato_id = k.id))
     or exists (select 1 from public.contrato_quitacoes q join public.contratos n on n.id = q.contrato_id
                where q.contrato_quitado_id = k.id and n.importacao_id is distinct from p_id))
   limit 1;
@@ -32,8 +42,10 @@ begin
   -- mensalidades: valor novo, cancelamento depois, parcela paga, averbação de fora
   select cm.matricula into v from public.mensalidades m join public.cliente_matriculas cm on cm.id = m.matricula_id
   where m.importacao_id = p_id and (
-       exists (select 1 from public.mensalidade_valores x where x.mensalidade_id = m.id and x.criado_em > imp.concluida_em)
-    or m.cancelada_em > imp.concluida_em
+       exists (select 1 from public.mensalidade_valores x where x.mensalidade_id = m.id and x.criado_em > v_corte)
+    or m.cancelada_em > v_corte
+    or exists (select 1 from public.pendencias_averbadora x join public.mensalidade_averbacoes a on a.id = x.mensalidade_averbacao_id
+               where a.mensalidade_id = m.id)
     or exists (select 1 from public.mensalidade_parcelas x where x.mensalidade_id = m.id and x.status in ('paga', 'parcial'))
     or exists (select 1 from public.mensalidade_averbacoes a where a.mensalidade_id = m.id and a.importacao_id is distinct from p_id))
   limit 1;
@@ -44,7 +56,7 @@ begin
   -- clientes e matrículas criados: alterados ou usados por algo de fora da importação
   select c.cpf into v from public.clientes c
   where (c.importacao_id = p_id and (
-           c.atualizado_em > imp.concluida_em
+           c.atualizado_em > v_corte
         or exists (select 1 from public.cliente_contas x where x.cliente_id = c.id)
         or exists (select 1 from public.cliente_beneficiarios x where x.cliente_id = c.id)
         or exists (select 1 from public.cliente_documentos x where x.cliente_id = c.id)
@@ -54,7 +66,10 @@ begin
         or exists (select 1 from public.contratos x where x.cliente_id = c.id and x.importacao_id is distinct from p_id)))
      or exists (select 1 from public.cliente_matriculas cm
                 where cm.cliente_id = c.id and cm.importacao_id = p_id and (
-                     exists (select 1 from public.contratos x where x.matricula_id = cm.id and x.importacao_id is distinct from p_id)
+                     -- matrícula corrigida ou trocada depois (o histórico só tem "antes" em alteração/exclusão)
+                     exists (select 1 from public.cliente_historico h
+                             where h.cliente_id = c.id and h.campo = 'matricula' and h.antes->>'id' = cm.id::text)
+                  or exists (select 1 from public.contratos x where x.matricula_id = cm.id and x.importacao_id is distinct from p_id)
                   or exists (select 1 from public.mensalidades x where x.matricula_id = cm.id and x.importacao_id is distinct from p_id)
                   or exists (select 1 from public.mensalidade_averbacoes x
                              where x.matricula_id = cm.id and x.importacao_id is distinct from p_id)

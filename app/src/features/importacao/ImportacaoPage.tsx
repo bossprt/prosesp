@@ -116,10 +116,10 @@ export function ImportacaoPage() {
       }));
       setGravado(total);
       setPrevia(null);
-      await qc.invalidateQueries({ queryKey: ['importacoes'] });
     } catch (e) {
-      setErro(mensagemErro(e));
+      setErro(`${mensagemErro(e)} Se parte já foi gravada, ela aparece no histórico abaixo: envie o arquivo de novo (o que entrou é pulado) ou use Desfazer.`);
     } finally {
+      await qc.invalidateQueries({ queryKey: ['importacoes'] });
       setOcupado(false);
       setProgresso('');
     }
@@ -181,7 +181,7 @@ export function ImportacaoPage() {
               <td className="px-3 py-1.5">{entraram}</td>
               <td className="px-3 py-1.5">{{ em_andamento: 'Em andamento', gravada: 'Gravada', desfeita: 'Desfeita' }[i.situacao] ?? i.situacao}</td>
               <td className="px-3 py-1.5">
-                {i.situacao === 'gravada' && (
+                {(i.situacao === 'gravada' || i.situacao === 'em_andamento') && (
                   <Botao variante="perigo" onClick={() => void desfazer(i.id, i.arquivo_nome)}>Desfazer</Botao>
                 )}
               </td>

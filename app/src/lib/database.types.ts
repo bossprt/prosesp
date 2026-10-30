@@ -675,14 +675,14 @@ isOneToOne: false
                   ]
                 },"importacoes": {
                   Row: {
-                    "arquivo_caminho": string | null,"arquivo_nome": string,"concluida_em": string | null,"criado_em": string,"data_posicao": string,"desfeita_em": string | null,"desfeita_por": string | null,"erros": Json | null,"hash": string,"id": string,"resumo": Json | null,"situacao": string,"usuario_id": string | null
+                    "arquivo_caminho": string | null,"arquivo_nome": string,"concluida_em": string | null,"criado_em": string,"data_posicao": string,"desfeita_em": string | null,"desfeita_por": string | null,"erros": Json | null,"hash": string,"id": string,"resumo": Json | null,"situacao": string,"ultimo_lote_em": string | null,"usuario_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "arquivo_caminho"?: string | null,"arquivo_nome": string,"concluida_em"?: string | null,"criado_em"?: string,"data_posicao": string,"desfeita_em"?: string | null,"desfeita_por"?: string | null,"erros"?: Json | null,"hash": string,"id"?: string,"resumo"?: Json | null,"situacao"?: string,"usuario_id"?: string | null
+                    "arquivo_caminho"?: string | null,"arquivo_nome": string,"concluida_em"?: string | null,"criado_em"?: string,"data_posicao": string,"desfeita_em"?: string | null,"desfeita_por"?: string | null,"erros"?: Json | null,"hash": string,"id"?: string,"resumo"?: Json | null,"situacao"?: string,"ultimo_lote_em"?: string | null,"usuario_id"?: string | null
                   }
                   Update: {
-                    "arquivo_caminho"?: string | null,"arquivo_nome"?: string,"concluida_em"?: string | null,"criado_em"?: string,"data_posicao"?: string,"desfeita_em"?: string | null,"desfeita_por"?: string | null,"erros"?: Json | null,"hash"?: string,"id"?: string,"resumo"?: Json | null,"situacao"?: string,"usuario_id"?: string | null
+                    "arquivo_caminho"?: string | null,"arquivo_nome"?: string,"concluida_em"?: string | null,"criado_em"?: string,"data_posicao"?: string,"desfeita_em"?: string | null,"desfeita_por"?: string | null,"erros"?: Json | null,"hash"?: string,"id"?: string,"resumo"?: Json | null,"situacao"?: string,"ultimo_lote_em"?: string | null,"usuario_id"?: string | null
                   }
                   Relationships: [
                     

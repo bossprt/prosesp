@@ -60,6 +60,9 @@ begin
     v_num := btrim(r->>'numero_antigo');
     begin
       v_num := public._imp_obrigatorio(v_num, 'Informe o nº do contrato antigo.');
+      if exists (select 1 from public.contratos where numero_legado = v_num and cliente_id is distinct from v_cli) then
+        raise exception 'O contrato antigo nº % já existe para outro cliente.', v_num;
+      end if;
       if exists (select 1 from public.contratos where numero_legado = v_num) then
         v_existentes := v_existentes || v_num;
         v_saida := v_saida || public._imp_item('Contratos', v_linha, 'existente', null);
@@ -135,7 +138,8 @@ begin
   for r in select * from jsonb_array_elements(g->'quitacoes') loop
     v_linha := (r->>'linha')::int;
     v_num := btrim(r->>'numero_novo');
-    if v_num = any (v_existentes) then
+    if v_num = any (v_existentes)
+       or (not v_mapa ? v_num and exists (select 1 from public.contratos where numero_legado = v_num)) then
       v_saida := v_saida || public._imp_item('Quitações', v_linha, 'existente', null);
       continue;
     end if;
@@ -173,7 +177,8 @@ begin
   for r in select * from jsonb_array_elements(g->'dividas') loop
     v_linha := (r->>'linha')::int;
     v_num := btrim(r->>'numero_antigo');
-    if v_num = any (v_existentes) then
+    if v_num = any (v_existentes)
+       or (not v_mapa ? v_num and exists (select 1 from public.contratos where numero_legado = v_num)) then
       v_saida := v_saida || public._imp_item('Dívidas compradas', v_linha, 'existente', null);
       continue;
     end if;

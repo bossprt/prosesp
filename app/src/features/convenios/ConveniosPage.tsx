@@ -2,6 +2,8 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { Aviso, Botao, Campo, Pagina, Selecao, Tabela } from '../../components/ui';
 import type { Tables } from '../../lib/database.types';
 import { exigir, useAcao, useConsulta } from '../../lib/dados';
+import { AssinaturaConfig } from './AssinaturaConfig';
+import { ModeloContrato } from './ModeloContrato';
 import { supabase } from '../../lib/supabase';
 import { useSessao } from '../auth/sessao';
 
@@ -199,6 +201,8 @@ function ConvenioDetalhe({
           </form>
         )}
       </div>
+      <AssinaturaConfig convenio={convenio} podeEditar={podeEditar} />
+      <ModeloContrato convenioId={convenio.id} podeEditar={podeEditar} />
     </div>
   );
 }

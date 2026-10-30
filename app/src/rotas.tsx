@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react';
 import { ApoioPage } from './features/apoio/ApoioPage';
 import { AprovacoesPage } from './features/aprovacoes/AprovacoesPage';
+import { AssinaturasPage } from './features/assinaturas/AssinaturasPage';
 import { AuditoriaPage } from './features/auditoria/AuditoriaPage';
 import { ClienteEquipePage, ClientesPage } from './features/clientes/ClientesPage';
 import { ContratoPage } from './features/contratos/ContratoPage';
@@ -27,6 +28,7 @@ export const rotasProtegidas: { path: string; element: ReactElement }[] = [
   { path: '/contratos/:id/editar', element: <DigitacaoPage /> },
   { path: '/parceiro/pre-digitacao', element: <DigitacaoPage /> },
   { path: '/parceiro/contratos', element: <MeusContratosPage /> },
+  { path: '/assinaturas', element: <AssinaturasPage /> },
   { path: '/pendencias-averbadora', element: <PendenciasAverbadoraPage /> },
   { path: '/prejuizo', element: <CandidatosPrejuizoPage /> },
   { path: '/clientes', element: <ClientesPage /> },

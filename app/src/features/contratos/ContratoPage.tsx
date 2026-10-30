@@ -7,7 +7,9 @@ import { formatarCpf, formatarReais } from '../../lib/mascaras';
 import { supabase } from '../../lib/supabase';
 import { useSessao } from '../auth/sessao';
 import { AcoesFase } from '../esteira/AcoesFase';
+import { abrirArquivo, chamarAssinatura } from '../assinaturas/useAssinaturas';
 import { AdeCampo } from './AdeCampo';
+import { AssinaturaCartao, type EnvioAssinatura } from './AssinaturaCartao';
 import { ParcelasTabela } from './ParcelasTabela';
 
 const SITUACAO_AVERBACAO: Record<string, string> = {
@@ -70,12 +72,38 @@ export function ContratoPage() {
     ehParceiro ? [] : ((await exigir(supabase.from('contrato_versoes').select('versao, motivo, criado_em').eq('contrato_id', id).order('versao'))) ?? []),
   );
 
-  const invalidar = [...todas, ['averbacoes', id], ['averb-mensalidade', id], ['parcelas', id], ['eventos', id], ['versoes', id], ['quitacoes', id]];
+  const envio = useConsulta(['assinatura', id], async () =>
+    (await exigir(supabase.from('contrato_assinaturas')
+      .select('id, situacao, prazo, enviado_em, assinado_em, pdf_caminho, pdf_assinado_caminho, erro, reenvios')
+      .eq('contrato_id', id).order('criado_em', { ascending: false }).limit(1).maybeSingle())) as EnvioAssinatura | null,
+  );
+  const evidencias = useConsulta(['assinatura-evidencias', envio.data?.id], async () =>
+    (await exigir(supabase.from('contrato_assinatura_evidencias').select('dados').eq('assinatura_id', envio.data!.id).maybeSingle())) as
+      { dados: { assinantes?: { nome: string; selfie?: string | null; documento?: string | null; documento_verso?: string | null }[] } } | null,
+    Boolean(envio.data?.id) && !ehParceiro,
+  );
+
+  const invalidar = [...todas, ['assinatura', id], ['averbacoes', id], ['averb-mensalidade', id], ['parcelas', id], ['eventos', id], ['versoes', id], ['quitacoes', id]];
   const mover = useAcao(
-    ({ para, motivo }: { para: Fase; motivo: string | null }) =>
-      exigir(supabase.rpc('mover_contrato', { p_id: id, p_para: para, p_motivo: motivo ?? undefined })),
+    async ({ para, motivo }: { para: Fase; motivo: string | null }) => {
+      await exigir(supabase.rpc('mover_contrato', { p_id: id, p_para: para, p_motivo: motivo ?? undefined }));
+      // pendente/recusa podem deixar um documento para cancelar na ZapSign; se falhar, fica na lista "Assinaturas"
+      if (para === 'pendente' || para === 'recusado') await chamarAssinatura({ acao: 'processar_cancelamentos' }).catch(() => {});
+    },
     invalidar,
   );
+  const enviarAss = useAcao(() => chamarAssinatura({ acao: 'enviar', contrato_id: id }), invalidar);
+  const reenviarAss = useAcao(
+    (atualizar: boolean) => chamarAssinatura({ acao: 'reenviar', contrato_id: id, atualizar_contato: atualizar }),
+    invalidar,
+  );
+  const aprovarAss = useAcao(() => exigir(supabase.rpc('aprovar_assinatura', { p_contrato_id: id })), invalidar);
+  const [okAss, setOkAss] = useState('');
+  const [erroArquivo, setErroArquivo] = useState('');
+  const abrir = (caminho: string) => {
+    setErroArquivo('');
+    abrirArquivo(caminho).catch(() => setErroArquivo('Não foi possível abrir o arquivo.'));
+  };
   const [diferenca, setDiferenca] = useState<{ antes: Record<string, number>; depois: Record<string, number> } | null>(null);
   const aprovar = useAcao(async () => {
     const r = (await exigir(supabase.rpc('aprovar_pre_digitacao', { p_id: id }))) as { mudou: boolean; antes?: Record<string, number>; depois?: Record<string, number> };
@@ -108,7 +136,7 @@ export function ContratoPage() {
   const temAdeAtivo = (averbacoes.data ?? []).some((a) => a.situacao === 'ativa');
   const temAdeMensalidade = (averbMensalidade.data ?? []).some((a) => a.situacao === 'proposta');
   const modoAde = (k.convenios?.ade_modo ?? 'seguro') as 'seguro' | 'rapido';
-  const erro = mover.erro || aprovar.erro || confirmar.erro || devolver.erro || ade.erro || adeMens.erro || liberar.erro || encerrar.erro;
+  const erro = mover.erro || enviarAss.erro || reenviarAss.erro || aprovarAss.erro || erroArquivo || aprovar.erro || confirmar.erro || devolver.erro || ade.erro || adeMens.erro || liberar.erro || encerrar.erro;
   const editavel = !['credito_liberado', 'recusado', 'cancelado'].includes(k.fase) &&
     (ehParceiro ? k.fase === 'pre_digitacao' : k.valores_travados_em ? pode('contratos.editar_averbado') : pode('contratos.digitar'));
 
@@ -169,6 +197,34 @@ export function ContratoPage() {
       {!ehParceiro && (
         <AcoesFase fase={k.fase} faseRetorno={k.fase_retorno} matriz={matriz.data ?? []} pode={pode}
           onMover={(para, motivo) => mover.mutate({ para, motivo })} />
+      )}
+
+      {(envio.data || k.fase === 'averbado') && (
+        <Secao titulo="Assinatura">
+          <AssinaturaCartao
+            fase={k.fase}
+            envio={envio.data ?? null}
+            podeMover={pode('contratos.mover')}
+            ehParceiro={ehParceiro}
+            onEnviar={() => (setOkAss(''), enviarAss.mutate(undefined, { onSuccess: () => setOkAss('Contrato enviado para assinatura.') }))}
+            onReenviar={(a) => (setOkAss(''), reenviarAss.mutate(a, { onSuccess: () => setOkAss('Link reenviado ao cliente.') }))}
+            onAprovar={() => (setOkAss(''), aprovarAss.mutate(undefined))}
+            onNaoAprovar={(motivo) => (setOkAss(''), mover.mutate({ para: 'pendente', motivo }))}
+            onAbrir={abrir}
+          />
+          <Aviso tipo="ok">{okAss}</Aviso>
+          {(evidencias.data?.dados.assinantes ?? []).some((a) => a.selfie || a.documento || a.documento_verso) && (
+            <div className="flex flex-wrap gap-2 text-sm">
+              {(evidencias.data?.dados.assinantes ?? []).flatMap((a) =>
+                ([['selfie', 'Selfie'], ['documento', 'Documento'], ['documento_verso', 'Documento (verso)']] as const)
+                  .filter(([c]) => a[c])
+                  .map(([c, r]) => (
+                    <Botao key={`${a.nome}-${c}`} variante="secundario" onClick={() => abrir(a[c]!)}>{r} de {a.nome}</Botao>
+                  )),
+              )}
+            </div>
+          )}
+        </Secao>
       )}
 
       <Secao titulo="Averbação">

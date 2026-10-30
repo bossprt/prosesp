@@ -17,6 +17,7 @@ const MENU: ItemMenu[] = [
   { rota: '/parceiro/clientes', rotulo: 'Meus clientes', permissao: 'clientes.ver', publico: 'parceiro' },
   { rota: '/parceiro/contratos', rotulo: 'Meus contratos', permissao: 'contratos.ver', publico: 'parceiro' },
   { rota: '/parceiro/pre-digitacao', rotulo: 'Pré-digitação', permissao: 'contratos.digitar', publico: 'parceiro' },
+  { rota: '/assinaturas', rotulo: 'Assinaturas', permissao: 'contratos.mover', publico: 'equipe' },
   { rota: '/pendencias-averbadora', rotulo: 'Pendências da averbadora', permissao: 'averbadora.pendencias', publico: 'equipe' },
   { rota: '/prejuizo', rotulo: 'Candidatos a prejuízo', permissao: 'contratos.encerrar', publico: 'equipe' },
   { rota: '/convenios', rotulo: 'Convênios', permissao: 'convenios.ver', publico: 'equipe' },

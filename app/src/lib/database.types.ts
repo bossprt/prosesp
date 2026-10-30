@@ -303,14 +303,14 @@ isOneToOne: true
                   ]
                 },"contrato_assinaturas": {
                   Row: {
-                    "assinado_em": string | null,"assinantes": Json | null,"cancelado_em": string | null,"conferido_em": string | null,"conferido_por": string | null,"contrato_id": string,"criado_em": string,"enviado_em": string | null,"enviado_por": string | null,"erro": string | null,"id": string,"modelo_id": string | null,"pdf_assinado_caminho": string | null,"pdf_caminho": string | null,"prazo": string | null,"situacao": string,"valores": NonNullable<Json>,"zapsign_token": string | null
+                    "assinado_em": string | null,"assinantes": Json | null,"cancelado_em": string | null,"conferido_em": string | null,"conferido_por": string | null,"contrato_id": string,"criado_em": string,"enviado_em": string | null,"enviado_por": string | null,"erro": string | null,"id": string,"modelo_id": string | null,"pdf_assinado_caminho": string | null,"pdf_caminho": string | null,"prazo": string | null,"reenvios": number,"situacao": string,"ultimo_reenvio_em": string | null,"valores": NonNullable<Json>,"zapsign_token": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "assinado_em"?: string | null,"assinantes"?: Json | null,"cancelado_em"?: string | null,"conferido_em"?: string | null,"conferido_por"?: string | null,"contrato_id": string,"criado_em"?: string,"enviado_em"?: string | null,"enviado_por"?: string | null,"erro"?: string | null,"id"?: string,"modelo_id"?: string | null,"pdf_assinado_caminho"?: string | null,"pdf_caminho"?: string | null,"prazo"?: string | null,"situacao": string,"valores": NonNullable<Json>,"zapsign_token"?: string | null
+                    "assinado_em"?: string | null,"assinantes"?: Json | null,"cancelado_em"?: string | null,"conferido_em"?: string | null,"conferido_por"?: string | null,"contrato_id": string,"criado_em"?: string,"enviado_em"?: string | null,"enviado_por"?: string | null,"erro"?: string | null,"id"?: string,"modelo_id"?: string | null,"pdf_assinado_caminho"?: string | null,"pdf_caminho"?: string | null,"prazo"?: string | null,"reenvios"?: number,"situacao": string,"ultimo_reenvio_em"?: string | null,"valores": NonNullable<Json>,"zapsign_token"?: string | null
                   }
                   Update: {
-                    "assinado_em"?: string | null,"assinantes"?: Json | null,"cancelado_em"?: string | null,"conferido_em"?: string | null,"conferido_por"?: string | null,"contrato_id"?: string,"criado_em"?: string,"enviado_em"?: string | null,"enviado_por"?: string | null,"erro"?: string | null,"id"?: string,"modelo_id"?: string | null,"pdf_assinado_caminho"?: string | null,"pdf_caminho"?: string | null,"prazo"?: string | null,"situacao"?: string,"valores"?: NonNullable<Json>,"zapsign_token"?: string | null
+                    "assinado_em"?: string | null,"assinantes"?: Json | null,"cancelado_em"?: string | null,"conferido_em"?: string | null,"conferido_por"?: string | null,"contrato_id"?: string,"criado_em"?: string,"enviado_em"?: string | null,"enviado_por"?: string | null,"erro"?: string | null,"id"?: string,"modelo_id"?: string | null,"pdf_assinado_caminho"?: string | null,"pdf_caminho"?: string | null,"prazo"?: string | null,"reenvios"?: number,"situacao"?: string,"ultimo_reenvio_em"?: string | null,"valores"?: NonNullable<Json>,"zapsign_token"?: string | null
                   }
                   Relationships: [
                     {
@@ -1267,6 +1267,9 @@ isOneToOne: false
 "_assinatura_falhou":
 { Args: { "p_erro": string,"p_id": string }; Returns: undefined
                            },
+"_assinatura_reenviada":
+{ Args: { "p_assinantes": Json,"p_id": string }; Returns: undefined
+                           },
 "_assinatura_registrar_envio":
 { Args: { "p_assinantes": Json,"p_id": string,"p_pdf_caminho": string,"p_zapsign_token": string }; Returns: undefined
                            },
@@ -1494,6 +1497,9 @@ isOneToOne: false
 "aprovar_pre_digitacao":
 { Args: { "p_id": string }; Returns: Json
                            },
+"assinatura_para_reenviar":
+{ Args: { "p_contrato_id": string }; Returns: Json
+                           },
 "assinatura_preparar":
 { Args: { "p_contrato_id": string }; Returns: Json
                            },
@@ -1673,6 +1679,9 @@ isOneToOne: false
                            },
 "so_digitos":
 { Args: { "p": string }; Returns: string
+                           },
+"validar_modelo_contrato":
+{ Args: { "p_texto": string }; Returns: undefined
                            }
           }
           Enums: {

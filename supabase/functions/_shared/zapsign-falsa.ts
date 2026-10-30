@@ -26,7 +26,8 @@ async function corpo(req: IncomingMessage): Promise<unknown> {
   return t ? JSON.parse(t) : null;
 }
 
-export async function iniciarZapSignFalsa(porta = 0, host = '127.0.0.1'): Promise<ZapSignFalsa> {
+/** urlPublica: endereço que aparece nos links de arquivo (ex.: http://host.docker.internal:porta, para as Edge Functions). */
+export async function iniciarZapSignFalsa(porta = 0, host = '127.0.0.1', urlPublica?: string): Promise<ZapSignFalsa> {
   const docs = new Map<string, DocFalso>();
   const chamadas: ZapSignFalsa['chamadas'] = [];
   let falhar = 0;
@@ -104,6 +105,6 @@ export async function iniciarZapSignFalsa(porta = 0, host = '127.0.0.1'): Promis
 
   await new Promise<void>((ok) => server.listen(porta, host, ok));
   const end = server.address();
-  url = `http://${host}:${typeof end === 'object' && end ? end.port : porta}`;
+  url = urlPublica ?? `http://${host}:${typeof end === 'object' && end ? end.port : porta}`;
   return { url, docs, chamadas, fechar: () => new Promise((ok) => server.close(() => ok())) };
 }

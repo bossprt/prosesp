@@ -4,6 +4,7 @@ import type { Tables } from '../../lib/database.types';
 import { exigir, useAcao, useConsulta } from '../../lib/dados';
 import { AssinaturaConfig } from './AssinaturaConfig';
 import { ModeloContrato } from './ModeloContrato';
+import { RetornoRemessaConfig } from './RetornoRemessaConfig';
 import { supabase } from '../../lib/supabase';
 import { useSessao } from '../auth/sessao';
 
@@ -203,6 +204,7 @@ function ConvenioDetalhe({
       </div>
       <AssinaturaConfig convenio={convenio} podeEditar={podeEditar} />
       <ModeloContrato convenioId={convenio.id} podeEditar={podeEditar} />
+      <RetornoRemessaConfig convenio={convenio} podeEditar={podeEditar} />
     </div>
   );
 }

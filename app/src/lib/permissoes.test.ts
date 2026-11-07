@@ -22,4 +22,10 @@ describe('itensMenu', () => {
     const itens = itensMenu(de(['clientes.ver', 'simulador.usar']), true);
     expect(itens.map((i) => i.rota)).toEqual(['/simulador', '/parceiro/clientes']);
   });
+  it('Retornos, Diferenças e Adimplência aparecem só com retorno.ver e nunca para o parceiro', () => {
+    const rotulos = (itensMenu(de(['retorno.ver']), false)).map((i) => i.rotulo);
+    expect(rotulos).toEqual(expect.arrayContaining(['Retornos', 'Diferenças', 'Adimplência']));
+    expect(itensMenu(de(['simulador.usar']), false).map((i) => i.rotulo)).not.toContain('Retornos');
+    expect(itensMenu(de(['retorno.ver']), true)).toEqual([]);
+  });
 });

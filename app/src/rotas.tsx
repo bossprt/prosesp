@@ -12,6 +12,11 @@ import { CandidatosPrejuizoPage } from './features/prejuizo/CandidatosPrejuizoPa
 import { ConveniosPage } from './features/convenios/ConveniosPage';
 import { EsteiraPage } from './features/esteira/EsteiraPage';
 import { ImportacaoPage } from './features/importacao/ImportacaoPage';
+import { AdimplenciaPage } from './features/retorno/AdimplenciaPage';
+import { DiferencasPage } from './features/retorno/DiferencasPage';
+import { ImportarRetornoPage } from './features/retorno/ImportarRetornoPage';
+import { RetornoDetalhePage } from './features/retorno/RetornoDetalhePage';
+import { RetornosPage } from './features/retorno/RetornosPage';
 import { ParceiroClientePage, ParceiroClientesPage } from './features/parceiro/ParceiroClientesPage';
 import { ParceirosPage } from './features/parceiros/ParceirosPage';
 import { SimuladorPage } from './features/simulador/SimuladorPage';
@@ -44,4 +49,9 @@ export const rotasProtegidas: { path: string; element: ReactElement }[] = [
   { path: '/permissoes', element: <PermissoesPage /> },
   { path: '/auditoria', element: <AuditoriaPage /> },
   { path: '/importacao', element: <ImportacaoPage /> },
+  { path: '/retornos', element: <RetornosPage /> },
+  { path: '/retornos/importar', element: <ImportarRetornoPage /> },
+  { path: '/retornos/:id', element: <RetornoDetalhePage /> },
+  { path: '/diferencas', element: <DiferencasPage /> },
+  { path: '/adimplencia', element: <AdimplenciaPage /> },
 ];

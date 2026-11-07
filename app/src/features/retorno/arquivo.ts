@@ -364,7 +364,7 @@ export async function lerArquivoRetorno(
 export function adivinharEscolhas(
   nomeArquivo: string, linhas: LinhaRetorno[],
 ): { produto?: 'parcelas' | 'mensalidades'; tipo?: 'descontados' | 'nao_descontados'; competencia?: string } {
-  const nome = chaveTexto(nomeArquivo).toUpperCase().replace(/[\s_\-]+/g, ' ');
+  const nome = chaveTexto(nomeArquivo).toUpperCase().replace(/[\s_-]+/g, ' ');
   const r: { produto?: 'parcelas' | 'mensalidades'; tipo?: 'descontados' | 'nao_descontados'; competencia?: string } = {};
   if (nome.includes('CONTRIBUI') || nome.includes('MENSALIDADE')) r.produto = 'mensalidades';
   else if (nome.includes('CONVENIO') || nome.includes('EMPRESTIMO') || nome.includes('PARCELA')) r.produto = 'parcelas';

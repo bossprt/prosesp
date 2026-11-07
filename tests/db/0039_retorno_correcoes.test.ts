@@ -11,11 +11,11 @@ async function clonar(c: pg.PoolClient, s: CenarioRet, n: number) {
     `select string_agg(quote_ident(column_name), ', ' order by ordinal_position) as l from information_schema.columns
      where table_schema = 'public' and table_name = 'contratos' and is_generated = 'NEVER' and column_name not in ('id', 'numero', 'numero_legado')`,
   )).rows[0].l;
-  await c.query(`alter table public.contratos disable trigger user`);
+  await c.query(`set local session_replication_role = replica`);
   await c.query(`create temp table _clones on commit drop as select gen_random_uuid() as id, g as i from generate_series(1, ${n}) g`);
   await c.query(`insert into public.contratos (id, ${cols}) select x.id, ${cols.split(', ').map((k: string) => `k.${k}`).join(', ')}
                  from public.contratos k, _clones x where k.id = $1`, [s.contrato]);
-  await c.query(`alter table public.contratos enable trigger user`);
+  await c.query(`set local session_replication_role = origin`);
   await c.query(`insert into public.contrato_averbacoes (contrato_id, convenio_id, matricula_id, ade, situacao, valor_averbado)
                  select x.id, k.convenio_id, k.matricula_id, 'V' || x.i, 'ativa', k.valor_parcela
                  from public.contratos k, _clones x where k.id = $1`, [s.contrato]);
@@ -71,9 +71,9 @@ describe('0039 correções do retorno', () => {
                                       select cliente_id, convenio_id, vinculo_id, 'NOVA9' from public.cliente_matriculas where id = $1 returning id`,
                                      [s.matricula])).rows[0].id;
       await c.query(`update public.contrato_averbacoes set situacao = 'migrada' where id = $1`, [antiga]);
-      await c.query(`alter table public.contratos disable trigger user`);
+      await c.query(`set local session_replication_role = replica`);
       await c.query(`update public.contratos set matricula_id = $2 where id = $1`, [s.contrato, novaMat]);
-      await c.query(`alter table public.contratos enable trigger user`);
+      await c.query(`set local session_replication_role = origin`);
       await c.query(`insert into public.contrato_averbacoes (contrato_id, convenio_id, matricula_id, ade, situacao, valor_averbado)
                      select id, convenio_id, $2, 'NOVOADE9', 'ativa', valor_parcela from public.contratos where id = $1`, [s.contrato, novaMat]);
       await gravarRet(c, s, [linha(s)]);

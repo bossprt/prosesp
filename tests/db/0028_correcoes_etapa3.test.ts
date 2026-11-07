@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type pg from 'pg';
-import { comoDono, comoUsuario, criarClienteTeste, criarUsuarioTeste, emTransacao, erroDe } from './helpers';
+import { comoDono, comoUsuario, criarClienteTeste, criarUsuarioTeste, emTransacao, erroDe, testePesado } from './helpers';
 import {
   cenarioImportacao, comContratos, conferir, contrato, gravar, juntar, lote, novaMatricula, novoCpf, type CenarioImp, type Lote,
 } from './importacao_fixture';
@@ -17,8 +17,9 @@ async function desfazer(c: pg.PoolClient, s: CenarioImp, id: string): Promise<st
 }
 
 describe('0028 correções da revisão da Etapa 3', () => {
-  it('desfazer de 600 contratos termina em menos de 8 segundos', async () => {
+  it('desfazer de 600 contratos termina em menos de 8 segundos', { timeout: 90000 }, async () => {
     await emTransacao(async (c) => {
+      await testePesado(c);
       const s = await cenarioImportacao(c);
       const d = juntar(...Array.from({ length: 300 }, () => comContratos({ parcelas_pagas: '20' }, { parcelas_pagas: '20' })));
       const { id } = await gravar(c, s, d);
@@ -28,8 +29,9 @@ describe('0028 correções da revisão da Etapa 3', () => {
     });
   });
 
-  it('lote com 300 contratos e 15 parcelas detalhadas cada confere em menos de 8 segundos', async () => {
+  it('lote com 300 contratos e 15 parcelas detalhadas cada confere em menos de 8 segundos', { timeout: 90000 }, async () => {
     await emTransacao(async (c) => {
+      await testePesado(c);
       const s = await cenarioImportacao(c);
       const lotes: Lote[] = Array.from({ length: 300 }, () => {
         const d = comContratos({ prazo: '15', parcelas_pagas: '0', valor_parcela: '140.00' });

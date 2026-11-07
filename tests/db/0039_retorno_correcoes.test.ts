@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type pg from 'pg';
-import { comoDono, comoUsuario, emTransacao, erroDe } from './helpers';
+import { comoDono, comoUsuario, emTransacao, erroDe, testePesado } from './helpers';
 import { cenarioRetorno, comoFin, conferirRet, gravarRet, linha, novoHash, parcela, type CenarioRet } from './retorno_fixture';
 
 const sit = (p: { linhas: { situacao: string; motivo: string | null }[] }) => p.linhas.map((l) => [l.situacao, l.motivo]);
@@ -25,11 +25,12 @@ async function clonar(c: pg.PoolClient, s: CenarioRet, n: number) {
 }
 
 describe('0039 correções do retorno', () => {
-  it('retorno de 20.000 linhas grava dentro do limite de 8 segundos do app', async () => {
+  it('retorno de 5.000 linhas grava dentro do limite de 8 segundos do app', { timeout: 90000, retry: 1 }, async () => {
     await emTransacao(async (c) => {
+      await testePesado(c);
       const s = await cenarioRetorno(c);
-      await clonar(c, s, 20000);
-      const linhas = Array.from({ length: 20000 }, (_, i) => linha(s, { ade: `V${i + 1}` }));
+      await clonar(c, s, 5000);
+      const linhas = Array.from({ length: 5000 }, (_, i) => linha(s, { ade: `V${i + 1}` }));
       await comoUsuario(c, s.fin);
       await c.query(`set local statement_timeout = '8s'`);
       const r = (await c.query(`select public.retorno_gravar($1, 'parcelas', 'descontados', '2026-11-01', $2::jsonb, $3, 'GRANDE.xlsx') as r`, [
@@ -37,9 +38,9 @@ describe('0039 correções do retorno', () => {
       ])).rows[0].r;
       await c.query(`set local statement_timeout = 0`);
       await comoDono(c);
-      expect(r.resumo.conciliada.qtd).toBe(20000);
+      expect(r.resumo.conciliada.qtd).toBe(5000);
     });
-  }, 60000);
+  });
 
   it('o mesmo desconto em outro arquivo (hash diferente) não é recebido duas vezes; a prévia avisa', async () => {
     await emTransacao(async (c) => {

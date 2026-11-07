@@ -118,3 +118,8 @@ export async function comoDono(c: pg.PoolClient): Promise<void> {
   // sem usuário logado (como o pg_cron e os scripts de manutenção)
   await c.query(`select set_config('request.jwt.claims', '', true)`);
 }
+
+/** Testes de volume/desempenho esperam um pelo outro (o banco local fica lento com dois ao mesmo tempo). */
+export async function testePesado(c: pg.PoolClient): Promise<void> {
+  await c.query(`select pg_advisory_xact_lock(750500)`);
+}

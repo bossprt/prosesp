@@ -381,17 +381,30 @@ begin
     raise exception 'Informe o nome do arquivo.';
   end if;
 
-  -- 1ª passada sem travas só para saber quem será tocado; trava em ordem fixa (donos por id, depois parcelas por id)
-  perform public._retorno_classificar(p_convenio_id, p_produto, p_tipo, p_competencia, p_linhas);
+  -- trava em ordem fixa, antes de classificar: os donos dos ADEs do arquivo (por id) e depois as parcelas da competência
   if p_produto = 'parcelas' then
-    perform 1 from public.contratos where id in (select dono from pg_temp._ret where dono is not null) order by id for update;
-    perform 1 from public.parcelas where id in (select parcela_id from pg_temp._ret where parcela_id is not null) order by id for update;
+    perform 1 from public.contratos where id in (
+      select a.contrato_id from public.contrato_averbacoes a
+      join (select distinct ltrim(btrim(l ->> 'ade'), '0') as chave from jsonb_array_elements(p_linhas) l
+            where btrim(coalesce(l ->> 'ade', '')) <> '') x on ltrim(a.ade, '0') = x.chave
+      where a.convenio_id = p_convenio_id) order by id for update;
+    perform 1 from public.parcelas p where p.competencia = p_competencia and p.contrato_id in (
+      select a.contrato_id from public.contrato_averbacoes a
+      join (select distinct ltrim(btrim(l ->> 'ade'), '0') as chave from jsonb_array_elements(p_linhas) l
+            where btrim(coalesce(l ->> 'ade', '')) <> '') x on ltrim(a.ade, '0') = x.chave
+      where a.convenio_id = p_convenio_id) order by p.id for update;
   else
-    perform 1 from public.mensalidades where id in (select dono from pg_temp._ret where dono is not null) order by id for update;
-    perform 1 from public.mensalidade_parcelas where id in (select mensalidade_parcela_id from pg_temp._ret
-                                                            where mensalidade_parcela_id is not null) order by id for update;
+    perform 1 from public.mensalidades where id in (
+      select a.mensalidade_id from public.mensalidade_averbacoes a
+      join (select distinct ltrim(btrim(l ->> 'ade'), '0') as chave from jsonb_array_elements(p_linhas) l
+            where btrim(coalesce(l ->> 'ade', '')) <> '') x on ltrim(a.ade, '0') = x.chave
+      where a.convenio_id = p_convenio_id) order by id for update;
+    perform 1 from public.mensalidade_parcelas p where p.competencia = p_competencia and p.mensalidade_id in (
+      select a.mensalidade_id from public.mensalidade_averbacoes a
+      join (select distinct ltrim(btrim(l ->> 'ade'), '0') as chave from jsonb_array_elements(p_linhas) l
+            where btrim(coalesce(l ->> 'ade', '')) <> '') x on ltrim(a.ade, '0') = x.chave
+      where a.convenio_id = p_convenio_id) order by p.id for update;
   end if;
-  -- 2ª passada com tudo travado: é ela que vale
   perform public._retorno_classificar(p_convenio_id, p_produto, p_tipo, p_competencia, p_linhas);
   v_resumo := public._retorno_resumo();
 
@@ -770,3 +783,9 @@ begin
     'convenio_id', p_convenio_id, 'produto', p_produto, 'competencia', p_competencia, 'linhas', jsonb_array_length(v)));
   return v;
 end $$;
+
+-- Índices nas ligações de retorno_linhas: sem eles, apagar um contrato (desfazer importação) varre a tabela inteira.
+create index retorno_linhas_contrato on public.retorno_linhas (contrato_id) where contrato_id is not null;
+create index retorno_linhas_sug_contrato on public.retorno_linhas (sugestao_contrato_id) where sugestao_contrato_id is not null;
+create index retorno_linhas_mensalidade on public.retorno_linhas (mensalidade_id) where mensalidade_id is not null;
+create index retorno_linhas_sug_mensalidade on public.retorno_linhas (sugestao_mensalidade_id) where sugestao_mensalidade_id is not null;

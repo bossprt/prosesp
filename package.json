@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "vitest run",
+    "test": "vitest run --project db && vitest run --project funcoes --project app",
     "test:db": "vitest run --project db",
     "db:reset": "supabase db reset",
     "db:tipos": "supabase gen types typescript --local > app/src/lib/database.types.ts"

@@ -147,7 +147,8 @@ begin
          nullif(btrim(coalesce(x.l ->> 'observacao', '')), '')
   from jsonb_array_elements(p_linhas) with ordinality as x(l, ord);
   update pg_temp._ret set ade_chave = public._ade_chave(ade), valor = public._dinheiro_seguro(valor_txt),
-    competencia_arquivo = case when comp_txt ~ '^\d{4}-(0[1-9]|1[0-2])-01$' then comp_txt::date end;
+    competencia_arquivo = case when comp_txt ~ '^\d{4}-(0[1-9]|1[0-2])-01$' then comp_txt::date end
+  where true; -- o Supabase (safeupdate) recusa UPDATE sem WHERE
 
   -- 1. dados mínimos  2. competência  3. ADE repetido no arquivo
   update pg_temp._ret set situacao = 'ignorada', motivo = 'Linha sem dados suficientes.'

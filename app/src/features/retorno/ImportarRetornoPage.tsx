@@ -12,6 +12,7 @@ import {
 } from './arquivo';
 import { competenciaDeMes, mesDeCompetencia, type LinhaConferida, type Produto, type ResumoRetorno, type TipoArquivo } from './comum';
 import { PreviaRetorno } from './PreviaRetorno';
+import { useSessao } from '../auth/sessao';
 
 const LIMITE_BYTES = 10 * 1024 * 1024;
 
@@ -27,7 +28,8 @@ export function ImportarRetornoPage() {
   const [produto, setProduto] = useState<Produto | ''>('');
   const [tipo, setTipo] = useState<TipoArquivo | ''>('');
   const [mes, setMes] = useState('');
-  const [previa, setPrevia] = useState<{ resumo: ResumoRetorno; linhas: LinhaConferida[] } | null>(null);
+  const [previa, setPrevia] = useState<{ resumo: ResumoRetorno; linhas: LinhaConferida[]; avisos: string[] } | null>(null);
+  const { pode } = useSessao();
   const [erro, setErro] = useState('');
   const [ocupado, setOcupado] = useState(false);
 
@@ -80,8 +82,10 @@ export function ImportarRetornoPage() {
     setErro('');
     setOcupado(true);
     try {
-      const r = (await exigir(supabase.rpc('retorno_conferir', parametros()))) as unknown as { resumo: ResumoRetorno; linhas: LinhaConferida[] };
-      setPrevia({ resumo: r.resumo ?? {}, linhas: r.linhas ?? [] });
+      const r = (await exigir(supabase.rpc('retorno_conferir', parametros()))) as unknown as {
+        resumo: ResumoRetorno; linhas: LinhaConferida[]; avisos?: string[];
+      };
+      setPrevia({ resumo: r.resumo ?? {}, linhas: r.linhas ?? [], avisos: r.avisos ?? [] });
     } catch (e) {
       setPrevia(null);
       setErro(mensagemErro(e));
@@ -103,6 +107,14 @@ export function ImportarRetornoPage() {
   }
 
   const limpar = () => setPrevia(null);
+
+  if (!pode('retorno.importar')) {
+    return (
+      <Pagina titulo="Importar retorno">
+        <Aviso>Você não tem permissão para importar retornos.</Aviso>
+      </Pagina>
+    );
+  }
 
   return (
     <Pagina titulo="Importar retorno">
@@ -148,7 +160,9 @@ export function ImportarRetornoPage() {
           </button>
         </div>
       )}
-      {previa && <PreviaRetorno resumo={previa.resumo} linhas={previa.linhas} onGravar={() => void gravar()} gravando={ocupado} />}
+      {previa && (
+        <PreviaRetorno resumo={previa.resumo} linhas={previa.linhas} avisos={previa.avisos} onGravar={() => void gravar()} gravando={ocupado} />
+      )}
     </Pagina>
   );
 }

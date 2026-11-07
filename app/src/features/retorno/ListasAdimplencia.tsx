@@ -25,11 +25,13 @@ const ABAS: { aba: AbaAdimplencia; rotulo: string }[] = [
 
 const vazio = (t: string) => <p className="text-sm text-slate-500">{t}</p>;
 
-export function ListasAdimplencia({ aba, onAba, naoDescontadas, ausentes, emAtraso, tudoPago, produtoAusentes, onProdutoAusentes }: {
+export function ListasAdimplencia({ aba, onAba, naoDescontadas, ausentes, ausentesProntos = true, emAtraso, tudoPago, produtoAusentes, onProdutoAusentes }: {
   aba: AbaAdimplencia;
   onAba: (a: AbaAdimplencia) => void;
   naoDescontadas: NaoDescontada[];
   ausentes: Ausente[];
+  /** false enquanto carrega ou se deu erro: não mostra "nenhum ausente" sem ter a resposta. */
+  ausentesProntos?: boolean;
   emAtraso: EmAtraso[];
   tudoPago: TudoPago[];
   produtoAusentes: Produto;
@@ -67,7 +69,7 @@ export function ListasAdimplencia({ aba, onAba, naoDescontadas, ausentes, emAtra
           <p className="text-sm text-slate-600">Cadastros que deveriam ter sido descontados, mas não aparecem em nenhum retorno gravado desta competência.</p>
           <Selecao rotulo="Produto" value={produtoAusentes} onChange={(e) => onProdutoAusentes(e.target.value as Produto)}
             opcoes={[{ valor: 'parcelas', rotulo: 'Parcelas dos contratos' }, { valor: 'mensalidades', rotulo: 'Mensalidades' }]} className="max-w-xs" />
-          {ausentes.length === 0 ? vazio('Nenhum cadastro ausente.') : (
+          {!ausentesProntos ? null : ausentes.length === 0 ? vazio('Nenhum cadastro ausente.') : (
             <Tabela colunas={['Contrato', 'Cliente', 'CPF', 'Matrícula', 'ADE', 'Valor', 'Falta']}>
               {ausentes.map((a, i) => (
                 <tr key={a.contrato_id ?? a.mensalidade_id ?? i}>

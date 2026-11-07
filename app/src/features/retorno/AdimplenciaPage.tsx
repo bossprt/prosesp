@@ -86,10 +86,15 @@ export function AdimplenciaPage() {
       {pronto && d && (
         <>
           <CartoesAdimplencia parcelas={d.parcelas} mensalidades={d.mensalidades} />
+          {aba === 'ausentes' && ausentes.error && (
+            <Aviso>Não foi possível carregar os ausentes do retorno. Tente de novo.</Aviso>
+          )}
+          {aba === 'ausentes' && ausentes.isLoading && <p className="text-sm text-slate-500">Carregando…</p>}
           <ListasAdimplencia
             aba={aba} onAba={setAba}
             naoDescontadas={d.nao_descontadas ?? []} emAtraso={d.em_atraso ?? []} tudoPago={d.tudo_pago ?? []}
-            ausentes={ausentes.data ?? []} produtoAusentes={produtoAusentes} onProdutoAusentes={setProdutoAusentes}
+            ausentes={ausentes.data ?? []} ausentesProntos={ausentes.isSuccess}
+            produtoAusentes={produtoAusentes} onProdutoAusentes={setProdutoAusentes}
           />
         </>
       )}

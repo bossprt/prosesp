@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type pg from 'pg';
+import pg from 'pg';
 import { comoDono, comoUsuario, emTransacao, erroDe, testePesado } from './helpers';
 import { cenarioRetorno, comoFin, conferirRet, gravarRet, linha, novoHash, parcela, type CenarioRet } from './retorno_fixture';
 
@@ -145,5 +145,34 @@ describe('0039 correções do retorno', () => {
         (await c.query(`select public.remessa_dados($1, 'mensalidades', '2026-11-01') as r`, [s.f.convenio])).rows[0].r);
       expect(rem[0].valor).toBe('25.00');
     });
+  });
+});
+
+describe('0039 pelo app: o Supabase recusa UPDATE sem WHERE (safeupdate)', () => {
+  it('conferir, gravar, vincular, baixar, desfazer e consultas funcionam com o safeupdate carregado', async () => {
+    const c = new pg.Client({ connectionString: process.env.DB_ADMIN_URL ?? 'postgresql://supabase_admin:postgres@127.0.0.1:54322/postgres' });
+    await c.connect();
+    try {
+      await c.query('begin');
+      await c.query(`load 'safeupdate'`);
+      const k = c as unknown as pg.PoolClient;
+      const s = await cenarioRetorno(k, '30.00');
+      const menor = (Number(s.valorParcela) - 5).toFixed(2);
+      expect(sit(await conferirRet(k, s, [linha(s)]))).toEqual([['conciliada', null]]);
+      const r = await gravarRet(k, s, [linha(s, { valor: menor }), linha(s, { ade: 'SEMADE1' })]);
+      const l = (await c.query(`select id from public.retorno_linhas where retorno_id = $1 and situacao = 'nao_encontrada'`, [r.retorno_id])).rows[0].id;
+      const dez = (await c.query(`select id from public.parcelas where contrato_id = $1 and competencia = '2026-12-01'`, [s.contrato])).rows[0].id;
+      await comoFin(k, s.fin, () => c.query(`select public.retorno_vincular_linha($1, $2, $3, 'teste')`, [l, s.contrato, dez]));
+      await comoFin(k, s.fin, () => c.query(`select public.adimplencia($1, '2026-11-01'), public.retorno_ausentes($1, 'parcelas', '2026-11-01'),
+                                                    public.remessa_dados($1, 'mensalidades', '2026-11-01'), public.diferencas_abertas(null)`, [s.f.convenio]));
+      await comoFin(k, s.gerente, () => c.query(`select public.retorno_desfazer($1, 'teste')`, [r.retorno_id]));
+      const r2 = await gravarRet(k, s, [linha(s, { valor: menor })]);
+      const p = await parcela(k, s.contrato);
+      await comoFin(k, s.gerente, () => c.query(`select public.diferenca_baixar($1, null, 'teste')`, [p.id]));
+      expect(r2.resumo).toBeTruthy();
+    } finally {
+      await c.query('rollback').catch(() => {});
+      await c.end();
+    }
   });
 });

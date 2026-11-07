@@ -21,7 +21,7 @@ export function RetornoDetalhePage() {
 
   const cab = useConsulta(['retorno', id, 'cabecalho'], () =>
     exigir(supabase.from('retornos')
-      .select('id, competencia, produto, tipo, arquivo_nome, resumo, criado_em, situacao, motivo_desfazer, convenios(nome)')
+      .select('id, convenio_id, competencia, produto, tipo, arquivo_nome, resumo, criado_em, situacao, motivo_desfazer, convenios(nome)')
       .eq('id', id).single()),
   );
   const linhas = useConsulta(['retorno', id, 'linhas'], async (): Promise<LinhaDetalhe[]> => {
@@ -54,14 +54,29 @@ export function RetornoDetalhePage() {
       let destinoId: string | null;
       if (destino.tipo === 'sugestao') {
         destinoId = produto === 'parcelas' ? linha.sugestao_contrato_id : linha.sugestao_mensalidade_id;
-      } else {
+      } else if (destino.tipo === 'numero') {
         const c = await exigir(supabase.from('contratos').select('id').eq('numero', destino.numero).maybeSingle());
         if (!c) throw { code: 'P0001', message: `Não existe contrato com o número ${destino.numero}.` };
         destinoId = c.id;
+      } else {
+        const m = (await exigir(supabase.from('mensalidades').select('id, cliente_matriculas!inner(matricula, convenio_id)')
+          .eq('situacao', 'ativa').eq('cliente_matriculas.matricula', destino.matricula)
+          .eq('cliente_matriculas.convenio_id', cab.data?.convenio_id ?? ''))) ?? [];
+        if (m.length !== 1) throw { code: 'P0001', message: `Não há mensalidade ativa com a matrícula ${destino.matricula} neste convênio.` };
+        destinoId = m[0].id;
       }
       if (!destinoId) throw { code: 'P0001', message: 'Não há para onde vincular esta linha.' };
+      let parcelaId = SEM_PARCELA;
+      if (destino.parcelaMes) {
+        const comp = `${destino.parcelaMes}-01`;
+        const p = produto === 'parcelas'
+          ? await exigir(supabase.from('parcelas').select('id').eq('contrato_id', destinoId).eq('competencia', comp).maybeSingle())
+          : await exigir(supabase.from('mensalidade_parcelas').select('id').eq('mensalidade_id', destinoId).eq('competencia', comp).maybeSingle());
+        if (!p) throw { code: 'P0001', message: `Não há parcela em ${competenciaBr(comp)} para esse cadastro.` };
+        parcelaId = p.id;
+      }
       return exigir(supabase.rpc('retorno_vincular_linha', {
-        p_linha_id: linha.id, p_destino_id: destinoId, p_parcela_id: SEM_PARCELA, p_motivo: motivo,
+        p_linha_id: linha.id, p_destino_id: destinoId, p_parcela_id: parcelaId, p_motivo: motivo,
       }));
     },
     invalidar,

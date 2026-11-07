@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
@@ -18,6 +18,12 @@ const conf = (linha: number, situacao: string, motivo: string | null = null): Li
 });
 
 describe('PreviaRetorno', () => {
+  it('mostra os avisos da prévia (retorno já gravado na mesma competência)', () => {
+    render(<PreviaRetorno resumo={{}} linhas={[]} avisos={['Já existe retorno gravado deste convênio, produto e tipo nesta competência: A.xlsx, em 01/11/2026.']}
+      onGravar={() => {}} gravando={false} />);
+    expect(screen.getByText(/Já existe retorno gravado/)).toBeInTheDocument();
+  });
+
   const resumo = { conciliada: { qtd: 2, soma: '200.00' }, nao_encontrada: { qtd: 1, soma: '100.00' } };
   const linhas = [conf(2, 'conciliada'), conf(3, 'conciliada'), conf(4, 'nao_encontrada', 'ADE não cadastrado.')];
 
@@ -108,7 +114,7 @@ describe('DialogoMotivo e VincularLinha', () => {
     render(<VincularLinha produto="parcelas" sugestao="contrato nº 12" onConfirmar={onConfirmar} onCancelar={() => {}} />);
     await userEvent.type(screen.getByLabelText('Motivo'), 'ADE trocado');
     await userEvent.click(screen.getByRole('button', { name: 'Vincular' }));
-    expect(onConfirmar).toHaveBeenCalledWith({ tipo: 'sugestao' }, 'ADE trocado');
+    expect(onConfirmar).toHaveBeenCalledWith({ tipo: 'sugestao', parcelaMes: '' }, 'ADE trocado');
   });
 
   it('sem sugestão, pede o número do contrato', async () => {
@@ -119,7 +125,18 @@ describe('DialogoMotivo e VincularLinha', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Informe o número do contrato.');
     await userEvent.type(screen.getByLabelText('Número do contrato'), '45');
     await userEvent.click(screen.getByRole('button', { name: 'Vincular' }));
-    expect(onConfirmar).toHaveBeenCalledWith({ tipo: 'numero', numero: 45 }, 'achei');
+    expect(onConfirmar).toHaveBeenCalledWith({ tipo: 'numero', numero: 45, parcelaMes: '' }, 'achei');
+  });
+  it('mensalidade sem sugestão: vincula pela matrícula e pode escolher a parcela de outro mês', async () => {
+    const onConfirmar = vi.fn();
+    render(<VincularLinha produto="mensalidades" sugestao={null} onConfirmar={onConfirmar} onCancelar={() => {}} />);
+    await userEvent.type(screen.getByLabelText('Motivo'), 'matrícula nova');
+    await userEvent.click(screen.getByRole('button', { name: 'Vincular' }));
+    expect(screen.getByRole('alert')).toHaveTextContent('Informe a matrícula do cliente.');
+    await userEvent.type(screen.getByLabelText('Matrícula do cliente (neste convênio)'), '00123');
+    fireEvent.change(screen.getByLabelText('Pagar a parcela de outro mês (opcional)'), { target: { value: '2026-10' } });
+    await userEvent.click(screen.getByRole('button', { name: 'Vincular' }));
+    expect(onConfirmar).toHaveBeenCalledWith({ tipo: 'matricula', matricula: '00123', parcelaMes: '2026-10' }, 'matrícula nova');
   });
 });
 

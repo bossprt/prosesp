@@ -745,6 +745,44 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"diferenca_baixas": {
+                  Row: {
+                    "criado_em": string,"id": string,"mensalidade_parcela_id": string | null,"motivo": string,"parcela_id": string | null,"usuario_id": string | null,"valor": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "criado_em"?: string,"id"?: string,"mensalidade_parcela_id"?: string | null,"motivo": string,"parcela_id"?: string | null,"usuario_id"?: string | null,"valor": number
+                  }
+                  Update: {
+                    "criado_em"?: string,"id"?: string,"mensalidade_parcela_id"?: string | null,"motivo"?: string,"parcela_id"?: string | null,"usuario_id"?: string | null,"valor"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "diferenca_baixas_mensalidade_parcela_id_fkey"
+      columns: ["mensalidade_parcela_id"]
+isOneToOne: false
+      referencedRelation: "mensalidade_parcelas"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "diferenca_baixas_mensalidade_parcela_id_fkey"
+      columns: ["mensalidade_parcela_id"]
+isOneToOne: false
+      referencedRelation: "v_mensalidade_parcelas_saldo"
+      referencedColumns: ["mensalidade_parcela_id"]
+    },{
+      foreignKeyName: "diferenca_baixas_parcela_id_fkey"
+      columns: ["parcela_id"]
+isOneToOne: false
+      referencedRelation: "parcelas"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "diferenca_baixas_parcela_id_fkey"
+      columns: ["parcela_id"]
+isOneToOne: false
+      referencedRelation: "v_parcelas_saldo"
+      referencedColumns: ["parcela_id"]
+    }
+                  ]
                 },"fase_transicoes": {
                   Row: {
                     "de": Database["public"]['Enums']["fase_contrato"],"para": Database["public"]['Enums']["fase_contrato"],"permissao": string
@@ -832,6 +870,38 @@ isOneToOne: false
       columns: ["migrada_para"]
 isOneToOne: false
       referencedRelation: "mensalidade_averbacoes"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"mensalidade_pagamentos": {
+                  Row: {
+                    "competencia_desconto": string,"criado_em": string,"id": string,"mensalidade_parcela_id": string,"origem": string,"retorno_linha_id": string | null,"valor": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "competencia_desconto": string,"criado_em"?: string,"id"?: string,"mensalidade_parcela_id": string,"origem"?: string,"retorno_linha_id"?: string | null,"valor": number
+                  }
+                  Update: {
+                    "competencia_desconto"?: string,"criado_em"?: string,"id"?: string,"mensalidade_parcela_id"?: string,"origem"?: string,"retorno_linha_id"?: string | null,"valor"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "mensalidade_pagamentos_mensalidade_parcela_id_fkey"
+      columns: ["mensalidade_parcela_id"]
+isOneToOne: false
+      referencedRelation: "mensalidade_parcelas"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "mensalidade_pagamentos_mensalidade_parcela_id_fkey"
+      columns: ["mensalidade_parcela_id"]
+isOneToOne: false
+      referencedRelation: "v_mensalidade_parcelas_saldo"
+      referencedColumns: ["mensalidade_parcela_id"]
+    },{
+      foreignKeyName: "mensalidade_pagamentos_retorno_linha_id_fkey"
+      columns: ["retorno_linha_id"]
+isOneToOne: false
+      referencedRelation: "retorno_linhas"
       referencedColumns: ["id"]
     }
                   ]
@@ -981,14 +1051,14 @@ isOneToOne: false
                   ]
                 },"parcela_pagamentos": {
                   Row: {
-                    "averbacao_id": string | null,"competencia_desconto": string,"criado_em": string,"id": string,"origem": string,"parcela_id": string,"valor": number
+                    "averbacao_id": string | null,"competencia_desconto": string,"criado_em": string,"id": string,"origem": string,"parcela_id": string,"retorno_linha_id": string | null,"valor": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "averbacao_id"?: string | null,"competencia_desconto": string,"criado_em"?: string,"id"?: string,"origem"?: string,"parcela_id": string,"valor": number
+                    "averbacao_id"?: string | null,"competencia_desconto": string,"criado_em"?: string,"id"?: string,"origem"?: string,"parcela_id": string,"retorno_linha_id"?: string | null,"valor": number
                   }
                   Update: {
-                    "averbacao_id"?: string | null,"competencia_desconto"?: string,"criado_em"?: string,"id"?: string,"origem"?: string,"parcela_id"?: string,"valor"?: number
+                    "averbacao_id"?: string | null,"competencia_desconto"?: string,"criado_em"?: string,"id"?: string,"origem"?: string,"parcela_id"?: string,"retorno_linha_id"?: string | null,"valor"?: number
                   }
                   Relationships: [
                     {
@@ -1009,6 +1079,12 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "v_parcelas_saldo"
       referencedColumns: ["parcela_id"]
+    },{
+      foreignKeyName: "parcela_pagamentos_retorno_linha_id_fkey"
+      columns: ["retorno_linha_id"]
+isOneToOne: false
+      referencedRelation: "retorno_linhas"
+      referencedColumns: ["id"]
     }
                   ]
                 },"parcelas": {
@@ -1114,6 +1190,106 @@ isOneToOne: false
                   }
                   Relationships: [
                     
+                  ]
+                },"retorno_linhas": {
+                  Row: {
+                    "ade": string | null,"competencia_arquivo": string | null,"contrato_id": string | null,"cpf": string | null,"dados": NonNullable<Json>,"id": string,"linha": number,"matricula": string | null,"mensalidade_id": string | null,"mensalidade_parcela_id": string | null,"motivo": string | null,"nome": string | null,"observacao": string | null,"parcela_id": string | null,"retorno_id": string,"situacao": string,"sugestao_contrato_id": string | null,"sugestao_mensalidade_id": string | null,"tratada_em": string | null,"tratada_por": string | null,"tratamento": string | null,"tratamento_motivo": string | null,"valor": number | null,"valor_aplicado": number | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "ade"?: string | null,"competencia_arquivo"?: string | null,"contrato_id"?: string | null,"cpf"?: string | null,"dados"?: NonNullable<Json>,"id"?: string,"linha": number,"matricula"?: string | null,"mensalidade_id"?: string | null,"mensalidade_parcela_id"?: string | null,"motivo"?: string | null,"nome"?: string | null,"observacao"?: string | null,"parcela_id"?: string | null,"retorno_id": string,"situacao": string,"sugestao_contrato_id"?: string | null,"sugestao_mensalidade_id"?: string | null,"tratada_em"?: string | null,"tratada_por"?: string | null,"tratamento"?: string | null,"tratamento_motivo"?: string | null,"valor"?: number | null,"valor_aplicado"?: number | null
+                  }
+                  Update: {
+                    "ade"?: string | null,"competencia_arquivo"?: string | null,"contrato_id"?: string | null,"cpf"?: string | null,"dados"?: NonNullable<Json>,"id"?: string,"linha"?: number,"matricula"?: string | null,"mensalidade_id"?: string | null,"mensalidade_parcela_id"?: string | null,"motivo"?: string | null,"nome"?: string | null,"observacao"?: string | null,"parcela_id"?: string | null,"retorno_id"?: string,"situacao"?: string,"sugestao_contrato_id"?: string | null,"sugestao_mensalidade_id"?: string | null,"tratada_em"?: string | null,"tratada_por"?: string | null,"tratamento"?: string | null,"tratamento_motivo"?: string | null,"valor"?: number | null,"valor_aplicado"?: number | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "retorno_linhas_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "contratos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "retorno_linhas_contrato_id_fkey"
+      columns: ["contrato_id"]
+isOneToOne: false
+      referencedRelation: "v_candidatos_prejuizo"
+      referencedColumns: ["contrato_id"]
+    },{
+      foreignKeyName: "retorno_linhas_mensalidade_id_fkey"
+      columns: ["mensalidade_id"]
+isOneToOne: false
+      referencedRelation: "mensalidades"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "retorno_linhas_mensalidade_parcela_id_fkey"
+      columns: ["mensalidade_parcela_id"]
+isOneToOne: false
+      referencedRelation: "mensalidade_parcelas"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "retorno_linhas_mensalidade_parcela_id_fkey"
+      columns: ["mensalidade_parcela_id"]
+isOneToOne: false
+      referencedRelation: "v_mensalidade_parcelas_saldo"
+      referencedColumns: ["mensalidade_parcela_id"]
+    },{
+      foreignKeyName: "retorno_linhas_parcela_id_fkey"
+      columns: ["parcela_id"]
+isOneToOne: false
+      referencedRelation: "parcelas"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "retorno_linhas_parcela_id_fkey"
+      columns: ["parcela_id"]
+isOneToOne: false
+      referencedRelation: "v_parcelas_saldo"
+      referencedColumns: ["parcela_id"]
+    },{
+      foreignKeyName: "retorno_linhas_retorno_id_fkey"
+      columns: ["retorno_id"]
+isOneToOne: false
+      referencedRelation: "retornos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "retorno_linhas_sugestao_contrato_id_fkey"
+      columns: ["sugestao_contrato_id"]
+isOneToOne: false
+      referencedRelation: "contratos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "retorno_linhas_sugestao_contrato_id_fkey"
+      columns: ["sugestao_contrato_id"]
+isOneToOne: false
+      referencedRelation: "v_candidatos_prejuizo"
+      referencedColumns: ["contrato_id"]
+    },{
+      foreignKeyName: "retorno_linhas_sugestao_mensalidade_id_fkey"
+      columns: ["sugestao_mensalidade_id"]
+isOneToOne: false
+      referencedRelation: "mensalidades"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"retornos": {
+                  Row: {
+                    "arquivo_nome": string,"competencia": string,"convenio_id": string,"criado_em": string,"desfeito_em": string | null,"desfeito_por": string | null,"hash": string,"id": string,"motivo_desfazer": string | null,"produto": string,"resumo": NonNullable<Json>,"situacao": string,"tipo": string,"usuario_id": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "arquivo_nome": string,"competencia": string,"convenio_id": string,"criado_em"?: string,"desfeito_em"?: string | null,"desfeito_por"?: string | null,"hash": string,"id"?: string,"motivo_desfazer"?: string | null,"produto": string,"resumo"?: NonNullable<Json>,"situacao"?: string,"tipo": string,"usuario_id"?: string | null
+                  }
+                  Update: {
+                    "arquivo_nome"?: string,"competencia"?: string,"convenio_id"?: string,"criado_em"?: string,"desfeito_em"?: string | null,"desfeito_por"?: string | null,"hash"?: string,"id"?: string,"motivo_desfazer"?: string | null,"produto"?: string,"resumo"?: NonNullable<Json>,"situacao"?: string,"tipo"?: string,"usuario_id"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "retornos_convenio_id_fkey"
+      columns: ["convenio_id"]
+isOneToOne: false
+      referencedRelation: "convenios"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"simulacoes": {
                   Row: {
@@ -1238,9 +1414,17 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"v_mensalidade_parcelas_saldo": {
+                  Row: {
+                    "baixado": number | null,"mensalidade_parcela_id": string,"pago": number | null,"saldo": number | null,"valor": number
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"v_parcelas_saldo": {
                   Row: {
-                    "pago": number | null,"parcela_id": string,"saldo": number | null,"valor": number
+                    "baixado": number | null,"pago": number | null,"parcela_id": string,"saldo": number | null,"valor": number
                   }
                   ComputedFields: never
                   Relationships: [
@@ -1249,7 +1433,10 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "_aplicar_satelites":
+            "_ade_prioridade":
+{ Args: { "p": Database["public"]['Enums']["situacao_averbacao"] }; Returns: number
+                           },
+"_aplicar_satelites":
 { Args: { "p_contrato_id": string,"p_dados": Json }; Returns: undefined
                            },
 "_apos_nova_averbacao":
@@ -1265,7 +1452,7 @@ isOneToOne: false
 { Args: { "p_contrato_id": string,"p_incluir_aprovado": boolean }; Returns: undefined
                            },
 "_assinatura_falhou":
-{ Args: { "p_erro": string,"p_id": string }; Returns: undefined
+{ Args: { "p_erro": string,"p_id": string,"p_zapsign_token"?: string }; Returns: undefined
                            },
 "_assinatura_reenviada":
 { Args: { "p_assinantes": Json,"p_id": string }; Returns: undefined
@@ -1336,6 +1523,9 @@ isOneToOne: false
                            },
 "_dados_do_contrato":
 { Args: { "k": Omit<Database["public"]['Tables']["contratos"]['Row'], Database["public"]['Tables']["contratos"]['ComputedFields']> }; Returns: Json
+                           },
+"_desfazer_importacao_base":
+{ Args: { "p_id": string }; Returns: undefined
                            },
 "_dinheiro":
 { Args: { "p": string }; Returns: number
@@ -1427,6 +1617,9 @@ isOneToOne: false
 "_imp_situacao":
 { Args: { "p": string }; Returns: Database["public"]['Enums']["situacao_contrato"]
                            },
+"_layout_erro":
+{ Args: { "p_remessa": Json,"p_retorno": Json }; Returns: string
+                           },
 "_linhas_candidatas":
 { Args: { "p_convenio_id": string,"p_data": string,"p_data_nascimento": string,"p_prazo": number,"p_tipo": Database["public"]['Enums']["tipo_contrato"],"p_vinculo_id": string }; Returns: {
               "convenio_id": string,
@@ -1447,6 +1640,9 @@ isOneToOne: false
         isOneToOne: false
         isSetofReturn: true
       } },
+"_mat_norm":
+{ Args: { "p": string }; Returns: string
+                           },
 "_mensalidade_na_liberacao":
 { Args: { "k": Omit<Database["public"]['Tables']["contratos"]['Row'], Database["public"]['Tables']["contratos"]['ComputedFields']>,"p_competencia": string }; Returns: undefined
                            },
@@ -1455,6 +1651,15 @@ isOneToOne: false
                            },
 "_pedir_cancelamento_averbacoes":
 { Args: { "p_contrato_id": string,"p_motivo": string }; Returns: undefined
+                           },
+"_recalcular_mensalidade_parcela":
+{ Args: { "p_hoje"?: string,"p_id": string }; Returns: undefined
+                           },
+"_recalcular_parcela":
+{ Args: { "p_hoje"?: string,"p_id": string }; Returns: undefined
+                           },
+"_recalcular_situacao_contrato":
+{ Args: { "p_contrato_id": string }; Returns: undefined
                            },
 "_registrar_acesso":
 { Args: { "p_acao": string,"p_detalhe": Json }; Returns: undefined
@@ -1467,11 +1672,32 @@ isOneToOne: false
               "base_comissao": Database["public"]['Enums']["base_comissao"],"fator": number,"linha_id": string,"parcela": number,"percentual_comissao": number,"simulacao_id": string,"valor": number,"valor_mensalidade": number
             }[]
                            },
+"_retorno_args":
+{ Args: { "p_competencia": string,"p_produto": string }; Returns: undefined
+                           },
+"_retorno_classificar":
+{ Args: { "p_competencia": string,"p_convenio_id": string,"p_linhas": Json,"p_produto": string,"p_tipo": string,"p_travar": boolean }; Returns: undefined
+                           },
+"_retorno_exigir_ver":
+{ Args: Record<PropertyKey, never>; Returns: undefined
+                           },
+"_retorno_resumo":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"_retorno_validar":
+{ Args: { "p_competencia": string,"p_convenio_id": string,"p_hash": string,"p_linhas": Json,"p_produto": string,"p_tipo": string }; Returns: undefined
+                           },
 "_validar_ade":
 { Args: { "p_ade": string,"p_confirmacao": string,"p_convenio_id": string }; Returns: string
                            },
 "_valor_mensalidade_em":
 { Args: { "p_competencia": string,"p_mensalidade_id": string }; Returns: number
+                           },
+"_vencimento_mensalidade":
+{ Args: { "p_mensalidade_parcela_id": string }; Returns: string
+                           },
+"adimplencia":
+{ Args: { "p_competencia": string,"p_convenio_id": string }; Returns: Json
                            },
 "app_equipe_pode":
 { Args: { "p_permissao": string }; Returns: boolean
@@ -1558,6 +1784,12 @@ isOneToOne: false
                            },
 "devolver_pre_digitacao":
 { Args: { "p_id": string,"p_motivo": string }; Returns: undefined
+                           },
+"diferenca_baixar":
+{ Args: { "p_mensalidade_parcela_id": string,"p_motivo": string,"p_parcela_id": string }; Returns: undefined
+                           },
+"diferencas_abertas":
+{ Args: { "p_convenio_id"?: string }; Returns: Json
                            },
 "digitar_contrato":
 { Args: { "p_dados": Json }; Returns: string
@@ -1661,8 +1893,29 @@ isOneToOne: false
 "registrar_ade_mensalidade":
 { Args: { "p_ade": string,"p_confirmacao"?: string,"p_contrato_id": string }; Returns: undefined
                            },
+"remessa_dados":
+{ Args: { "p_competencia": string,"p_convenio_id": string,"p_produto": string }; Returns: Json
+                           },
 "resolver_pendencia":
 { Args: { "p_id": string }; Returns: undefined
+                           },
+"retorno_ausentes":
+{ Args: { "p_competencia": string,"p_convenio_id": string,"p_produto": string }; Returns: Json
+                           },
+"retorno_conferir":
+{ Args: { "p_competencia": string,"p_convenio_id": string,"p_hash": string,"p_linhas": Json,"p_produto": string,"p_tipo": string }; Returns: Json
+                           },
+"retorno_desfazer":
+{ Args: { "p_motivo": string,"p_retorno_id": string }; Returns: undefined
+                           },
+"retorno_gravar":
+{ Args: { "p_arquivo_nome": string,"p_competencia": string,"p_convenio_id": string,"p_hash": string,"p_linhas": Json,"p_produto": string,"p_tipo": string }; Returns: Json
+                           },
+"retorno_ignorar_linha":
+{ Args: { "p_linha_id": string,"p_motivo": string }; Returns: undefined
+                           },
+"retorno_vincular_linha":
+{ Args: { "p_destino_id": string,"p_linha_id": string,"p_motivo": string,"p_parcela_id": string }; Returns: Json
                            },
 "salvar_modelo_contrato":
 { Args: { "p_convenio_id": string,"p_teste": boolean,"p_texto": string }; Returns: number
